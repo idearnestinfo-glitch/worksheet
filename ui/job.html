@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WORKSHEET — WORKSHEET</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --card-bg: #ffffff;
+    --color-primary: #1a4a6b;
+    --color-accent: #c0392b;
+    --line: #d2cfc8;
+    --line-2: #8a8a8a;
+    --section-bg: #2c3e50;
+    --section-fg: #ffffff;
+    --label-bg: #f0ede4;
+    --field-bg: #ffffff;
+    --highlight-yellow: #fff7d6;
+    --highlight-cyan: #d6efef;
+    --highlight-purple: #e8e4f0;
+    --highlight-purple-strong: #d4ccdf;
+    --status-active: #fff7d6;
+    --ink: #1a1a1a;
+    --ink-2: #4a4a4a;
+    --ink-3: #707070;
+    --link: #006985;
+    --st-quote: #b87333;
+    --st-order: #2e7d52;
+    --st-done: #1a4a6b;
+    --st-cancel: #909090;
+    --st-shooting: #6b3eaa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Hiragino Sans", "Yu Gothic Medium", sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  body { padding: 20px; }
+  .container { max-width: 1280px; margin: 0 auto; }
+
+  /* TOP NAV */
+  .topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .topnav a { color: var(--link); text-decoration: none; }
+  .topnav a:hover { text-decoration: underline; }
+  .nav-actions { display: flex; gap: 8px; }
+  .nav-actions button {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    background: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 3px;
+  }
+  .nav-actions button:hover { border-color: var(--ink); }
+  .nav-actions button.primary {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  /* WORKSHEET */
+  .worksheet {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 0;
+  }
+
+  /* HEADER STRIP: WORKSHEET title + status radios + dates */
+  .ws-header {
+    display: grid;
+    grid-template-columns: 200px 1fr 280px;
+    border-bottom: 1px solid var(--line);
+    padding: 10px 16px;
+    align-items: start;
+    gap: 16px;
+  }
+  .ws-title h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+  .ws-title .co {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.05em;
+  }
+
+  .ws-status-bar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) auto;
+    gap: 6px 14px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .ws-status-bar label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .ws-status-bar input[type=radio] { margin: 0; }
+  .ws-status-bar input[type=checkbox] { margin: 0; }
+  .ws-status-bar label.active {
+    background: var(--status-active);
+    padding: 2px 6px;
+    margin: -2px -6px;
+    border-radius: 3px;
+  }
+  .ws-status-bar .biz-toggle {
+    border-left: 1px solid var(--line);
+    padding-left: 12px;
+  }
+
+  .ws-dates {
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr auto 1fr;
+    column-gap: 8px;
+    row-gap: 4px;
+    font-size: 12px;
+    align-items: center;
+  }
+  .ws-dates .lbl { color: var(--ink); white-space: nowrap; }
+  .ws-dates input {
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    background: var(--field-bg);
+    font-family: inherit;
+    font-size: 12px;
+    width: 100%;
+  }
+  .ws-dates .row-2col {
+    display: contents;
+  }
+
+  /* INFO BAR */
+  .ws-meta-bar {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+  .ws-meta-bar .field {
+    padding: 6px 10px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .ws-meta-bar .field:last-child { border-right: none; }
+  .ws-meta-bar .lbl {
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .ws-meta-bar input {
+    flex: 1;
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    background: var(--field-bg);
+    font-family: inherit;
+    font-size: 12px;
+    min-width: 50px;
+  }
+  .ws-meta-bar .id-display {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  /* CLIENT BOX */
+  .ws-client-box {
+    border-bottom: 1px solid var(--line);
+  }
+  .ws-client-box .row {
+    display: grid;
+    border-bottom: 1px solid var(--line);
+  }
+  .ws-client-box .row:last-child { border-bottom: none; }
+  .ws-client-box .cell {
+    padding: 6px 10px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    min-height: 30px;
+  }
+  .ws-client-box .cell:last-child { border-right: none; }
+  .ws-client-box .lbl {
+    color: var(--ink);
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 56px;
+  }
+  .ws-client-box .row-client { grid-template-columns: 1fr 220px; }
+  .ws-client-box .row-product { grid-template-columns: 1fr; }
+  .ws-client-box .row-spec { grid-template-columns: repeat(6, 1fr); }
+  .ws-client-box input,
+  .ws-client-box select {
+    flex: 1;
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    background: var(--field-bg);
+    font-family: inherit;
+    font-size: 12px;
+  }
+
+  /* SECTION (社内 / 外注) */
+  .ws-section {
+    border-bottom: 1px solid var(--line);
+  }
+  .section-title {
+    background: var(--section-bg);
+    color: var(--section-fg);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .ws-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .ws-table th, .ws-table td {
+    border: 1px solid var(--line);
+    padding: 4px 8px;
+    background: white;
+    vertical-align: top;
+  }
+  .ws-table thead th {
+    background: var(--label-bg);
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 11px;
+  }
+  .ws-table td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .ws-table td input,
+  .ws-table td textarea {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .ws-table td input.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .ws-table tr.subrow td {
+    background: #fafaf9;
+    color: var(--ink-3);
+    font-size: 11px;
+    font-style: italic;
+  }
+  .ws-table tr.subrow td .label-internal {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--ink-3);
+    margin-right: 8px;
+    border: 1px solid var(--line);
+    padding: 0 6px;
+    border-radius: 2px;
+    font-size: 10px;
+  }
+  .ws-table tr.subtotal td {
+    background: var(--label-bg);
+    font-weight: 600;
+  }
+  .ws-table .col-bunkin { width: 90px; }
+  .ws-table .col-tanto { width: 80px; }
+  .ws-table .col-num { width: 90px; }
+
+  /* 社内外注 sub-area */
+  .ws-shanai-gaichu {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 6px 10px;
+    background: #fafaf9;
+    display: grid;
+    grid-template-columns: auto 1fr 100px;
+    gap: 8px 16px;
+    align-items: center;
+    font-size: 12px;
+  }
+  .ws-shanai-gaichu .lbl { font-weight: 600; color: var(--ink); }
+  .ws-shanai-gaichu .workers { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* TOTALS */
+  .ws-totals {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+  .ws-totals .cell {
+    padding: 8px 12px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 11px;
+  }
+  .ws-totals .cell:last-child { border-right: none; }
+  .ws-totals .cell .lbl {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 10px;
+  }
+  .ws-totals .cell .val {
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .ws-totals .cell.profit { background: var(--highlight-yellow); }
+  .ws-totals .cell.gaichu-total { background: var(--highlight-cyan); }
+  .ws-totals .cell.bill-net { background: var(--highlight-purple); }
+  .ws-totals .cell.bill-gross { background: var(--highlight-purple-strong); }
+
+  /* BIKO */
+  .ws-biko {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    font-size: 12px;
+    align-items: start;
+  }
+  .ws-biko .lbl { font-weight: 600; padding-top: 4px; }
+  .ws-biko textarea {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid var(--line);
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: 12px;
+    resize: vertical;
+    background: var(--field-bg);
+  }
+
+  /* MEMO PANEL (内訳計算) */
+  .ws-memo-panel {
+    margin-top: 16px;
+    border: 1px solid var(--line);
+    background: white;
+  }
+  .ws-memo-panel h2 {
+    background: var(--section-bg);
+    color: var(--section-fg);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .memo-block {
+    border-bottom: 1px solid var(--line);
+    padding: 10px 12px;
+  }
+  .memo-block:last-child { border-bottom: none; }
+  .memo-block .memo-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .memo-block .memo-head .label {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .memo-block .memo-note {
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .memo-block table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .memo-block table th, .memo-block table td {
+    border: 1px solid var(--line);
+    padding: 3px 6px;
+    background: white;
+  }
+  .memo-block table th {
+    background: var(--label-bg);
+    font-weight: 600;
+    font-size: 10px;
+  }
+  .memo-block table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .memo-block .formula {
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-top: 4px;
+  }
+
+  /* TickTick badge */
+  .ticktick-info {
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: white;
+    border: 1px solid var(--line);
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ticktick-info .tt-title { font-weight: 600; color: var(--ink); }
+  .ticktick-info .tt-meta { color: var(--ink-3); font-size: 11px; }
+
+  /* Misc */
+  .empty {
+    padding: 40px;
+    text-align: center;
+    color: var(--ink-3);
+    font-style: italic;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+    margin-left: 6px;
+  }
+  .badge.見積 { background: var(--st-quote); }
+  .badge.受注 { background: var(--st-order); }
+  .badge.経理提出済 { background: var(--st-done); }
+  .badge.中止 { background: var(--st-cancel); }
+  .badge.撮影 { background: var(--st-shooting); }
+  .badge.外注 { background: transparent; color: var(--ink-2); border: 1px solid var(--ink-2); }
+
+  /* edit mode */
+  body.read-only input,
+  body.read-only select,
+  body.read-only textarea {
+    pointer-events: none;
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+  body.read-only input:disabled,
+  body.read-only select:disabled,
+  body.read-only textarea:disabled {
+    color: var(--ink);
+  }
+
+  .save-bar {
+    position: sticky;
+    bottom: 16px;
+    margin-top: 16px;
+    background: var(--ink);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 4px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .save-bar.show { display: flex; }
+  .save-bar button {
+    padding: 6px 16px;
+    border: 1px solid white;
+    background: white;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+    border-radius: 3px;
+    margin-left: 8px;
+  }
+  .save-bar button.danger {
+    background: transparent;
+    color: white;
+  }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 13px;
+    z-index: 200;
+  }
+</style>
+</head>
+<body class="read-only">
+
+<div class="container">
+
+  <div class="topnav">
+    <a href="index.html">← 一覧へ戻る</a>
+    <div class="nav-actions">
+      <button id="btn-edit">編集</button>
+      <button id="btn-print" disabled title="Phase 3で実装">PDF出力</button>
+    </div>
+  </div>
+
+  <div id="root"></div>
+
+  <div class="save-bar" id="save-bar">
+    <span id="save-msg">変更があります</span>
+    <div>
+      <button class="danger" id="btn-cancel">キャンセル</button>
+      <button id="btn-save">保存</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  const D = window.IDEARNEST;
+  const STATUS_VALUES = ['見積', '中止', '受注', '経理提出済'];
+  const STAFF = (D?.settings?.staff || []).map(s => s.name);
+
+  function getJobIdFromURL() {
+    const url = new URL(window.location.href);
+    return url.searchParams.get('id');
+  }
+  function findJob(id) {
+    if (!D || !D.jobs) return null;
+    if (id === '撮影') return D.jobs.find(j => j.種別 === '撮影');
+    return D.jobs.find(j => String(j.制作番号) === String(id));
+  }
+  const $ = (sel) => document.querySelector(sel);
+  const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtYen = (n) => n == null || n === 0 ? '' : '¥' + Number(n).toLocaleString('ja-JP');
+  const fmtDate = (s) => s ? s.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$1/$2/$3') : '';
+  const calcTaxIncl = (n, rate=10) => n == null ? null : Math.round(n * (1 + rate/100));
+  const sumMeisai = (j) => (j.明細 || []).reduce((s, x) => s + (x.税抜 || 0), 0);
+  const sumGaichuCost = (j) => (j.外注 || []).reduce((s, x) => s + (x.仕込経費 || 0), 0);
+  const sumGaichuBill = (j) => (j.外注 || []).reduce((s, x) => s + (x.請求額 || 0), 0);
+  const STATE = { editing: false, draft: null };
+
+  const id = getJobIdFromURL();
+  const job = findJob(id);
+
+  if (!job) {
+    $('#root').innerHTML = `<div class="empty">案件 #${escapeHtml(id || '?')} が見つかりません<br><br><a href="index.html">← 一覧へ戻る</a></div>`;
+    return;
+  }
+
+  function render() {
+    STATE.draft = STATE.draft || JSON.parse(JSON.stringify(job));
+    const j = STATE.draft;
+
+    const meisaiSubtotal = sumMeisai(j);
+    const meisaiTaxIncl = (j.明細 || []).reduce((s, x) => s + (calcTaxIncl(x.税抜, x.税率 || 10) || 0), 0);
+    const gaichuCost = sumGaichuCost(j);
+    const gaichuBill = sumGaichuBill(j);
+    const gaichuBillTax = (j.外注 || []).reduce((s, x) => s + (calcTaxIncl(x.請求額, 10) || 0), 0);
+
+    const billNet = meisaiSubtotal + gaichuBill;
+    const billGross = meisaiTaxIncl + gaichuBillTax;
+    const profit = billNet - gaichuCost;
+    const profitRate = billNet > 0 ? (profit / billNet * 100) : 0;
+
+    // STATUS RADIOS
+    const statusRadios = STATUS_VALUES.map(v => `
+      <label class="${j.状態===v?'active':''}">
+        <input type="radio" name="状態" value="${v}" ${j.状態===v?'checked':''} data-field="状態">
+        ${v}
+      </label>
+    `).join('');
+
+    // MEISAI ROWS
+    const meisaiRows = (j.明細 || []).map((m, i) => {
+      const taxIncl = calcTaxIncl(m.税抜, m.税率 || 10);
+      const breakdown = m.内訳_社内 || {};
+      const hasBreakdown = breakdown.仕込み経費 != null || breakdown.掛率 != null || breakdown.計算メモ;
+      let subRow = '';
+      if (hasBreakdown) {
+        const parts = [];
+        if (breakdown.仕込み経費 != null) parts.push(`仕込 <strong>${fmtYen(breakdown.仕込み経費)}</strong>`);
+        if (breakdown.掛率 != null) parts.push(`掛率 <strong>×${breakdown.掛率}</strong>`);
+        const calc = (breakdown.仕込み経費 != null && breakdown.掛率 != null)
+          ? `＝ <strong>${fmtYen(breakdown.仕込み経費 * breakdown.掛率)}</strong>`
+          : '';
+        subRow = `<tr class="subrow"><td colspan="6">
+          <span class="label-internal">社内のみ</span>
+          ${parts.join(' × ')} ${calc}
+          ${breakdown.計算メモ ? '— ' + escapeHtml(breakdown.計算メモ) : ''}
+        </td></tr>`;
+      }
+      const remarks = m.備考 ? `<tr class="subrow"><td colspan="6">${escapeHtml(m.備考)}</td></tr>` : '';
+      return `
+        <tr>
+          <td><input data-meisai="${i}.区分" value="${escapeHtml(m.区分||'')}"></td>
+          <td><input data-meisai="${i}.内容" value="${escapeHtml(m.内容||'')}"></td>
+          <td><input data-meisai="${i}.数量" class="num" value="${m.数量??''}"></td>
+          <td><input data-meisai="${i}.単価" class="num" value="${m.単価??''}"></td>
+          <td class="num">${fmtYen(m.税抜)}</td>
+          <td class="num">${fmtYen(taxIncl)}</td>
+        </tr>
+        ${subRow}
+        ${remarks}
+      `;
+    }).join('');
+
+    // GAICHU ROWS
+    const gaichuRows = (j.外注 || []).map((g, i) => `
+      <tr>
+        <td><input data-gaichu="${i}.発注先" value="${escapeHtml(g.発注先||'')}"></td>
+        <td><input data-gaichu="${i}.内容" value="${escapeHtml(g.内容||'')}"></td>
+        <td><input data-gaichu="${i}.支払方法" value="${escapeHtml(g.支払方法||'')}"></td>
+        <td class="num">${fmtYen(g.仕込経費)}</td>
+        <td class="num">${fmtYen(g.請求額)}</td>
+        <td class="num">${fmtYen(calcTaxIncl(g.請求額, 10))}</td>
+      </tr>
+      ${g.備考 ? `<tr class="subrow"><td colspan="6">${escapeHtml(g.備考)}</td></tr>` : ''}
+    `).join('');
+
+    // 社内外注 / staff list
+    const workersRow = STAFF.map(s => `<span>${escapeHtml(s)}</span>`).join('');
+
+    // CLIENT
+    const clientFull = j.末端クライアント
+      ? `${escapeHtml(j.クライアント)} ／ ${escapeHtml(j.末端クライアント)}様`
+      : escapeHtml(j.クライアント);
+
+    // MEMO BLOCKS (内訳計算)
+    const memoBlocks = (j.内訳_社内のみ || []).map((m, i) => {
+      const items = (m.items || []).map((it, k) => `
+        <tr>
+          <td>${fmtYen(it.制作費)}</td>
+          <td>${escapeHtml(it.仕入業者||'')}</td>
+          <td class="num">${it.部数 ?? ''}</td>
+          <td class="num">${fmtYen(it.単価)}</td>
+          <td class="num">${fmtYen(it.仕入価格)}</td>
+          <td class="num">${it.掛率 ?? ''}</td>
+          <td class="num">${fmtYen(it.売価)}</td>
+          <td class="num">${fmtYen(it.売単価)}</td>
+          <td class="num">${fmtYen(it.粗利)}</td>
+        </tr>
+      `).join('');
+      return `
+        <div class="memo-block">
+          <div class="memo-head">
+            <span class="label">■メモ${m.メモ番号 || (i+1)}</span>
+            ${m.備考 ? `<span class="memo-note">${escapeHtml(m.備考)}</span>` : ''}
+          </div>
+          <table>
+            <thead><tr>
+              <th>制作費</th><th>仕入業者</th><th>部数</th><th>単価</th>
+              <th>仕入価格</th><th>掛率</th><th>売価</th><th>売単価</th><th>粗利</th>
+            </tr></thead>
+            <tbody>${items}</tbody>
+          </table>
+          <div class="formula">※売価合計＝仕入価格×掛率＋制作費　／　売単価＝売価合計÷数量　／　粗利＝売価合計-仕入価格</div>
+        </div>
+      `;
+    }).join('');
+
+    const html = `
+      <div class="worksheet">
+
+        <header class="ws-header">
+          <div class="ws-title">
+            <h1>WORKSHEET</h1>
+            <div class="co">WORKSHEET</div>
+          </div>
+
+          <div class="ws-status-bar">
+            ${statusRadios}
+            <label class="biz-toggle">
+              <input type="checkbox" data-field="社内業務" ${j.社内業務?'checked':''}> 社内業務
+            </label>
+          </div>
+
+          <div class="ws-dates">
+            <span class="lbl">依頼日／</span><input type="date" data-field="依頼日" value="${j.依頼日||''}">
+            <span class="lbl">見積日／</span><input type="date" data-field="見積日" value="${j.見積日||''}">
+            <span class="lbl">納品日／</span><input type="date" data-field="納品日" value="${j.納品日||''}">
+          </div>
+        </header>
+
+        <div class="ws-meta-bar">
+          <div class="field">
+            <span class="lbl">担当／</span>
+            <select data-field="担当">
+              ${['', ...STAFF].map(s => `<option ${j.担当===s?'selected':''} value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <span class="lbl">制作・請求番号／</span>
+            <span class="id-display">ID ${j.制作番号 != null ? j.制作番号 : '撮影'}</span>
+            ${j.種別==='撮影' ? '<span class="badge 撮影">撮影</span>' : ''}
+            ${j.外注フラグ ? '<span class="badge 外注">外注</span>' : ''}
+          </div>
+          <div class="field">
+            <span class="lbl">請求締日／</span>
+            <input data-field="請求締日" value="${escapeHtml(j.請求締日||'')}">
+          </div>
+          <div class="field">
+            <span class="lbl">請求月／</span>
+            <input data-field="請求月" value="${escapeHtml(j.請求月||'')}" placeholder="26.04">
+          </div>
+        </div>
+
+        <div class="ws-client-box">
+          <div class="row row-client">
+            <div class="cell">
+              <span class="lbl">クライアント</span>
+              <input data-field="クライアント" value="${escapeHtml(j.クライアント||'')}">
+            </div>
+            <div class="cell">
+              <span class="lbl">担当者</span>
+              <input data-field="_dummy_tanto" value="">
+            </div>
+          </div>
+          <div class="row row-product">
+            <div class="cell">
+              <span class="lbl">製品名</span>
+              <input data-field="製品名" value="${escapeHtml(j.製品名||'')}">
+            </div>
+          </div>
+          <div class="row row-spec">
+            <div class="cell"><span class="lbl">媒体</span><input data-field="媒体" value="${escapeHtml(j.媒体||'')}"></div>
+            <div class="cell"><span class="lbl">サイズ</span><input data-field="サイズ" value="${escapeHtml(j.サイズ||'')}"></div>
+            <div class="cell"><span class="lbl">数量</span><input data-field="数量" value="${j.数量??''}"></div>
+            <div class="cell"><span class="lbl">色数</span><input data-field="色数" value="${escapeHtml(j.色数||'')}"></div>
+            <div class="cell"><span class="lbl">加工</span><input data-field="加工" value="${escapeHtml(j.加工||'')}"></div>
+            <div class="cell"><span class="lbl">用紙</span><input data-field="用紙" value="${escapeHtml(j.用紙||'')}"></div>
+          </div>
+        </div>
+
+        <section class="ws-section">
+          <h2 class="section-title">社内</h2>
+          <table class="ws-table">
+            <thead>
+              <tr>
+                <th class="col-bunkin">区分</th>
+                <th>内容</th>
+                <th class="col-num">数量</th>
+                <th class="col-num">単価</th>
+                <th class="col-num">請求額</th>
+                <th class="col-num">請求額／税込</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${meisaiRows || '<tr><td colspan="6" class="empty" style="padding:20px;">明細未入力</td></tr>'}
+              <tr class="subtotal">
+                <td colspan="4" class="num">制作合計</td>
+                <td class="num">${fmtYen(meisaiSubtotal)}</td>
+                <td class="num">${fmtYen(meisaiTaxIncl)}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="ws-shanai-gaichu">
+            <span class="lbl">社内外注</span>
+            <div class="workers">${workersRow}</div>
+            <span></span>
+          </div>
+        </section>
+
+        <section class="ws-section">
+          <h2 class="section-title">外注</h2>
+          <table class="ws-table">
+            <thead>
+              <tr>
+                <th class="col-bunkin">外注項目</th>
+                <th>外注作業概略</th>
+                <th class="col-tanto">支払方法</th>
+                <th class="col-num">仕込経費</th>
+                <th class="col-num">請求額</th>
+                <th class="col-num">請求額／税込</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${gaichuRows || '<tr><td colspan="6" class="empty" style="padding:20px;">外注なし</td></tr>'}
+              <tr class="subtotal">
+                <td colspan="3" class="num">外注合計</td>
+                <td class="num">${fmtYen(gaichuCost)}</td>
+                <td class="num">${fmtYen(gaichuBill)}</td>
+                <td class="num">${fmtYen(gaichuBillTax)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <div class="ws-totals">
+          <div class="cell profit">
+            <span class="lbl">粗利率</span>
+            <span class="val">${profitRate.toFixed(2)}%</span>
+          </div>
+          <div class="cell profit">
+            <span class="lbl">粗利益</span>
+            <span class="val">${fmtYen(profit)}</span>
+          </div>
+          <div class="cell gaichu-total">
+            <span class="lbl">外注経費合計</span>
+            <span class="val">${fmtYen(gaichuCost)}</span>
+          </div>
+          <div class="cell bill-net">
+            <span class="lbl">請求合計／税抜</span>
+            <span class="val">${fmtYen(billNet)}</span>
+          </div>
+          <div class="cell bill-gross">
+            <span class="lbl">請求合計／税込</span>
+            <span class="val">${fmtYen(billGross)}</span>
+          </div>
+        </div>
+
+        <div class="ws-biko">
+          <span class="lbl">備考</span>
+          <textarea data-field="メモtext" placeholder="(備考なし)">${escapeHtml((j.メモ || []).join('\n'))}</textarea>
+        </div>
+
+      </div>
+
+      ${memoBlocks ? `<div class="ws-memo-panel"><h2>MEMO（社内・内訳計算）</h2>${memoBlocks}</div>` : ''}
+
+      ${j.TickTick_title ? `
+        <div class="ticktick-info">
+          <span class="tt-title">TickTick: ${escapeHtml(j.TickTick_title)}</span>
+          <span class="tt-meta">タスクID: ${escapeHtml(j.TickTick_task_id || '')}</span>
+        </div>
+      ` : ''}
+    `;
+
+    $('#root').innerHTML = html;
+    document.title = `[#${j.制作番号 || '撮影'}] ${j.製品名 || ''} — WORKSHEET`;
+  }
+
+  function setEditing(on) {
+    STATE.editing = on;
+    document.body.classList.toggle('read-only', !on);
+    $('#btn-edit').textContent = on ? '編集中' : '編集';
+    $('#save-bar').classList.toggle('show', on);
+  }
+
+  $('#btn-edit').addEventListener('click', () => {
+    if (!STATE.editing) {
+      STATE.draft = JSON.parse(JSON.stringify(job));
+      setEditing(true);
+    }
+  });
+
+  $('#btn-cancel').addEventListener('click', () => {
+    STATE.draft = JSON.parse(JSON.stringify(job));
+    setEditing(false);
+    render();
+  });
+
+  $('#btn-save').addEventListener('click', async () => {
+    try {
+      // collect form values into STATE.draft
+      document.querySelectorAll('[data-field]').forEach(el => {
+        const k = el.dataset.field;
+        if (k.startsWith('_')) return;
+        let v = el.type === 'checkbox' ? el.checked : el.value;
+        if (k === 'メモtext') {
+          STATE.draft.メモ = v.split('\n').filter(s => s.trim());
+          return;
+        }
+        if (el.type === 'radio') {
+          if (!el.checked) return;
+        }
+        if (k === '数量' && v !== '') v = Number(v);
+        else if (v === '') v = null;
+        STATE.draft[k] = v;
+      });
+      document.querySelectorAll('[data-meisai]').forEach(el => {
+        const path = el.dataset.meisai.split('.');
+        const idx = parseInt(path[0]);
+        if (!STATE.draft.明細[idx]) return;
+        let v = el.value;
+        if (el.classList.contains('num') && v !== '') v = Number(v);
+        else if (v === '') v = null;
+        STATE.draft.明細[idx][path[1]] = v;
+      });
+      document.querySelectorAll('[data-gaichu]').forEach(el => {
+        const path = el.dataset.gaichu.split('.');
+        const idx = parseInt(path[0]);
+        if (!STATE.draft.外注[idx]) return;
+        let v = el.value;
+        STATE.draft.外注[idx][path[1]] = v;
+      });
+
+      const r = await fetch('/api/save', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(STATE.draft),
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || 'failed');
+
+      // reload data
+      const newScript = await fetch('data.js?_=' + Date.now()).then(r => r.text());
+      const fn = new Function(newScript + '; return window.IDEARNEST;');
+      window.IDEARNEST = fn();
+      Object.assign(D, window.IDEARNEST);
+      const fresh = findJob(id);
+      Object.assign(job, fresh);
+      STATE.draft = null;
+      setEditing(false);
+      render();
+
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = '保存しました';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2000);
+    } catch (e) {
+      alert('保存失敗: ' + e.message + '\nサーバが起動していますか？ (python3 scripts/serve.py)');
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

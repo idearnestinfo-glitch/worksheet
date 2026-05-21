@@ -1,0 +1,4483 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WORKSHEET — WORKSHEET</title>
+<style>
+  :root {
+    /* Brand palette - 主要 */
+    --color-primary: #839FD6;       /* blue (基本) */
+    --color-secondary: #CAD8E8;     /* light blue */
+    --color-cream: #F4EFD8;         /* cream */
+    --color-pink: #D86988;          /* pink/coral */
+    --color-green: #217261;         /* deep green */
+
+    /* Brand palette - 副次（スポット利用） */
+    --color-navy: #47486A;          /* muted navy */
+    --color-teal: #62A1A7;          /* charming teal */
+    --color-yellow: #FCC060;        /* koromiko yellow */
+    --color-coral: #EE9169;         /* sushi orange */
+    --color-lavender: #7678AC;      /* lavender purple */
+    --color-soft-blue: #6B8CBF;     /* soft navy */
+    --color-pale-pink: #EED9EA;     /* pale pink */
+    --color-pale-blue: #C1D7EE;     /* pale blue */
+    --color-warm-cream: #ECE3D3;    /* ballet white */
+    --color-graphite: #444442;      /* matte graphite */
+
+    --bg: #f5f4f0;
+    --card-bg: #ffffff;
+    --ink: #1a1a1a;
+    --ink-2: #4a4a4a;
+    --ink-3: #707070;
+    --ink-4: #a8a8a8;
+    --line: #d2cfc8;
+    --line-2: #b0aca3;
+    --section-bg: var(--color-navy);
+    --section-fg: #ffffff;
+    --label-bg: #ececec;
+    --field-bg: #ffffff;
+    --highlight-yellow: var(--color-cream);
+    --highlight-cyan: var(--color-secondary);
+    --highlight-purple: var(--color-secondary);
+    --highlight-purple-strong: var(--color-primary);
+    --status-active: var(--color-cream);
+    --st-quote: #6b7280;
+    --st-order: var(--color-pink);
+    --st-invoice: #c47f00;
+    --st-done: var(--color-green);
+    --st-cancel: #b0b0b0;
+    --st-shooting: var(--color-lavender);
+    --link: var(--color-primary);
+    --danger: var(--color-pink);
+    --a4-width: 794px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Hiragino Sans", "Yu Gothic Medium", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  body { min-height: 100vh; padding: 28px 24px 80px; }
+  main { width: var(--a4-width); max-width: 100%; margin: 0 auto; }
+
+  /* HERO */
+  header.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 8px;
+    border-bottom: none;
+    margin-bottom: 8px;
+    gap: 16px;
+  }
+  .title-block h1 {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .title-block .sub { color: var(--ink-3); font-size: 13px; letter-spacing: 0.02em; }
+  .meta-block { text-align: right; color: var(--ink-2); font-size: 12px; line-height: 1.8; }
+  .meta-block strong { display: block; color: var(--ink); font-size: 12px; font-weight: 600; }
+  .meta-block span { display: block; }
+  .meta-block .server-status { display: inline-block; margin-top: 0; }
+  .server-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .server-status.online { background: #e8f5e8; color: #1d6f3a; }
+  .server-status.offline { background: #f0eee8; color: #707070; }
+  .server-status::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .server-status.online::before { background: #2f7d4a; }
+  .server-status.offline::before { background: #a0a0a0; }
+
+  /* STATS */
+
+  /* CONTROLS */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .controls .pills { margin-top: 20px; }
+  .controls-top {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .search-box { flex: 1; }
+  .search-box input {
+    width: 100%;
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--card-bg);
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .search-box input:focus { outline: 2px solid var(--ink); outline-offset: -2px; }
+
+  /* 絞り込みボタン */
+  .btn-adv {
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--card-bg);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--ink-2);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-adv:hover { border-color: var(--ink); color: var(--ink); }
+  .btn-adv.active { background: var(--ink); color: white; border-color: var(--ink); }
+  .btn-adv.has-filter { border-color: var(--color-primary); color: var(--color-primary); }
+  .btn-adv.active.has-filter { background: var(--color-primary); border-color: var(--color-primary); color: white; }
+
+  /* 絞り込みパネル */
+  .adv-panel {
+    padding: 14px 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  .adv-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .adv-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .adv-label {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .adv-select, .adv-input {
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--field-bg);
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  .adv-select { min-width: 140px; }
+  .adv-input { width: 82px; }
+  .adv-select:focus, .adv-input:focus { outline: 2px solid var(--ink); outline-offset: -2px; }
+  .adv-month-range { display: flex; gap: 6px; align-items: center; }
+  .adv-month-sep { color: var(--ink-3); font-size: 12px; }
+  .adv-clear {
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: transparent;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--ink-3);
+  }
+  .adv-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+  .pills { display: flex; gap: 10px; }
+  .pill {
+    flex: 1;
+    padding: 7px 4px;
+    border: 1px solid var(--line);
+    background: var(--card-bg);
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    color: var(--ink-2);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .pill:hover { border-color: var(--ink); color: var(--ink); }
+  .pill.active { background: var(--ink); color: white; border-color: var(--ink); }
+  .pill .count { color: var(--ink-3); margin-left: 4px; font-size: 11px; }
+  .pill.active .count { color: rgba(255,255,255,0.7); }
+  .btn-new-job {
+    padding: 8px 18px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-new-job:hover { background: #222; }
+  .btn-new-job:disabled { opacity: 0.35; cursor: default; }
+
+  /* JOB CARDS (collapsed) */
+  .jobs { display: flex; flex-direction: column; gap: 8px; }
+  .job-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .job-card:hover { border-color: var(--ink-2); }
+  .job-card.expanded { border-color: var(--ink); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .job-card-summary {
+    padding: 14px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+  }
+  .card-info { flex: 1; min-width: 0; }
+  .card-amount {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    white-space: nowrap;
+    gap: 6px;
+  }
+  /* TickTick 進捗リング */
+  .progress-ring-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .progress-ring-label {
+    font-size: 9px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+  .card-amount-num {
+    display: flex;
+    align-items: flex-end;
+  }
+  .card-amount-value {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .card-amount-label {
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-left: 5px;
+    font-weight: 400;
+    align-self: flex-end;
+    padding-bottom: 3px;
+  }
+  .job-row1 { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .job-id { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .job-id strong { color: var(--ink); font-weight: 700; }
+  .badges { display: flex; gap: 4px; align-items: center; }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+  }
+  .badge.見積 { background: var(--st-quote); }
+  .badge.受注 { background: var(--st-order); }
+  .badge.請求OK { background: var(--st-invoice); }
+  .badge.請求書発行済 { background: var(--color-teal); }
+  .badge.入金確認済 { background: var(--st-done); }
+  .badge.中止 { background: var(--st-cancel); }
+  .badge.撮影 { background: var(--st-shooting); }
+  .badge.外注 { background: transparent; color: var(--ink-2); border: 1px solid var(--ink-2); }
+  .job-row2 { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+  .job-row3 { font-size: 13px; color: var(--color-primary); font-weight: 600; margin-bottom: 4px; }
+  .job-current {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--color-yellow);
+    padding: 2px 10px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+    font-weight: 500;
+    max-width: calc(100% - 16px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+  }
+  .job-current::before { content: "現在  "; color: var(--ink-2); font-weight: 400; }
+  .job-current.is-tt::before { content: "工程  "; color: var(--color-primary); font-weight: 600; }
+  .job-current.is-done { background: var(--line); color: var(--ink-3); }
+  .job-current.is-done::before { content: "完了  "; color: var(--ink-3); font-weight: 400; }
+  .job-row4 { font-size: 11px; color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 14px; }
+
+  /* TIMELINE (進行履歴＋議事録) */
+  .job-timeline { padding: 14px 18px; background: var(--card-bg); border-top: 1px solid var(--line); }
+  .tl-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .tl-title { font-size: 12px; color: var(--ink-2); letter-spacing: 0.06em; }
+  .tl-item {
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 12px; padding: 5px 6px; border-radius: 3px;
+    text-decoration: none; color: var(--ink);
+    border-left: 2px solid var(--line); margin-bottom: 2px;
+  }
+  .tl-item.tl-minute { background: var(--bg); border-left-color: var(--color-primary); }
+  .tl-item.tl-minute:hover { background: var(--line); }
+  .tl-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink-3); flex-shrink: 0; margin-top: 3px;
+  }
+  .tl-dot.minute { background: var(--color-primary); }
+  .tl-date { color: var(--ink-3); font-size: 11px; white-space: nowrap; min-width: 72px; }
+  .tl-text { flex: 1; font-weight: 500; }
+  .tl-summary { color: var(--ink-3); font-size: 11px; margin-left: auto; }
+  .tl-expand-btn {
+    margin-top: 6px; font-size: 11px; color: var(--ink-2);
+    background: none; border: none; cursor: pointer; padding: 2px 6px;
+  }
+  .tl-expand-btn:hover { text-decoration: underline; }
+  .tl-empty { font-size: 12px; color: var(--ink-4); }
+  .job-row4 span strong { color: var(--ink-2); font-weight: 500; }
+
+  /* WORKSHEET (expanded inside card) */
+  .worksheet {
+    background: var(--bg);
+  }
+  .ws-actions {
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .ws-actions .btn {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    background: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 3px;
+    display: inline-block;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .ws-actions .btn:hover { border-color: var(--ink); }
+  .ws-actions .btn.primary {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+  .ws-actions .btn.danger { color: var(--danger); border-color: var(--danger); }
+  .ws-actions .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .ws-actions .actions-right { display: flex; gap: 6px; }
+
+  .worksheet-body {
+    background: white;
+    border: 1px solid var(--line);
+    margin: 12px;
+  }
+
+  /* HEADER STRIP */
+  .ws-header {
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    border-bottom: 1px solid var(--line);
+    padding: 10px 14px;
+    align-items: center;
+    gap: 14px;
+  }
+  .ws-title h2 { font-size: 16px; font-weight: 700; letter-spacing: 0.04em; }
+  .ws-title .co { font-size: 10px; color: var(--ink-3); letter-spacing: 0.05em; }
+  .ws-dates {
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr auto 1fr;
+    column-gap: 8px;
+    row-gap: 4px;
+    font-size: 12px;
+    align-items: center;
+  }
+  .ws-dates .lbl { color: var(--ink); white-space: nowrap; }
+  .ws-dates input {
+    border: 1px solid var(--line);
+    padding: 3px 6px;
+    background: var(--field-bg);
+    font-family: inherit;
+    font-size: 12px;
+    width: 100%;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* META BAR */
+  .ws-meta-bar {
+    display: grid;
+    grid-template-columns: 0.9fr 1.6fr 0.7fr 0.7fr;
+    border-bottom: 1px solid var(--line);
+  }
+  .ws-meta-bar .field {
+    padding: 6px 10px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .ws-meta-bar .field:last-child { border-right: none; }
+  .ws-meta-bar .lbl { color: var(--ink-3); white-space: nowrap; flex-shrink: 0; }
+  .ws-meta-bar input, .ws-meta-bar select {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    border: 1px solid var(--line);
+    padding: 3px 6px;
+    background: var(--field-bg);
+    font-family: inherit;
+    font-size: 12px;
+  }
+  .ws-meta-bar .id-display {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  /* CLIENT BOX */
+  .ws-client-box { border-bottom: 1px solid var(--line); }
+  .ws-client-box .row { display: grid; border-bottom: 1px solid var(--line); }
+  .ws-client-box .row:last-child { border-bottom: none; }
+  .ws-client-box .cell {
+    padding: 6px 10px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    min-height: 30px;
+  }
+  .ws-client-box .cell:last-child { border-right: none; }
+  .ws-client-box .lbl {
+    color: var(--ink);
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 56px;
+  }
+  .ws-client-box .row-client { grid-template-columns: 1fr 220px; }
+  .ws-client-box .row-product { grid-template-columns: 1fr 220px; }
+  .ws-client-box .cell { min-width: 0; }
+  .ws-client-box input {
+    flex: 1;
+    width: 100%;
+    border: 1px solid var(--line);
+    padding: 3px 6px;
+    background: var(--field-bg);
+    font-family: inherit;
+    font-size: 12px;
+    min-width: 0;
+  }
+
+  /* SECTION (社内 / 外注) */
+  .ws-section { border-bottom: 1px solid var(--line); }
+  .section-title {
+    background: var(--section-bg);
+    color: var(--section-fg);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .ws-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .ws-table th, .ws-table td {
+    border: 1px solid var(--line);
+    padding: 4px 8px;
+    background: white;
+    vertical-align: top;
+  }
+  .ws-table thead th {
+    background: var(--label-bg);
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 11px;
+  }
+  .ws-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .ws-table td input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--ink);
+    padding: 0;
+  }
+  .ws-table td input.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .ws-table tr.subrow td {
+    background: #fafaf9;
+    color: var(--ink-3);
+    font-size: 11px;
+    font-style: italic;
+  }
+  .ws-table tr.subrow td .label-internal {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--ink-3);
+    margin-right: 8px;
+    border: 1px solid var(--line);
+    padding: 0 6px;
+    border-radius: 2px;
+    font-size: 10px;
+  }
+  /* breakdown editor (in edit mode) */
+  .breakdown-edit-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: center;
+    font-style: normal;
+  }
+  .breakdown-edit-row > .group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  /* 計算メモは仕込×掛率と同じ行に横並び */
+  .breakdown-edit-row > .group.memo-group {
+    flex: 1;
+    min-width: 0;
+  }
+  .breakdown-edit-row > .group.memo-group input.inline-memo {
+    flex: 1;
+    min-width: 180px;
+    width: 100%;
+  }
+  .ws-table tr.subrow input.inline-num,
+  .ws-table tr.subrow input.inline-memo {
+    border: 1px solid var(--line) !important;
+    background: white !important;
+    padding: 2px 5px !important;
+    font-style: normal !important;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    color: var(--ink) !important;
+  }
+  .ws-table tr.subrow input.inline-num {
+    width: 80px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .ws-table tr.subrow input.inline-memo {
+    flex: 1;
+    min-width: 240px;
+  }
+  .breakdown-edit-row .calc-result {
+    color: var(--ink-2);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* row-level remove button */
+  .row-remove-btn {
+    border: 1px solid var(--line);
+    background: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+    padding: 0 8px;
+    border-radius: 2px;
+    color: var(--danger);
+  }
+  .row-remove-btn:hover { background: var(--danger); color: white; }
+  .add-opt-link {
+    border: none;
+    background: transparent;
+    color: var(--link);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 2px 0;
+    text-decoration: underline;
+  }
+  .ws-table tr.subtotal td {
+    background: var(--label-bg);
+    font-weight: 600;
+  }
+  .ws-table .col-bunkin { width: 110px; }
+  .ws-table .col-bunkin-del { width: 24px; padding: 0 !important; text-align: center; }
+  .ws-table .col-tanto { width: 90px; }
+  .ws-table .col-num { width: 90px; }
+  .ws-table td.col-content,
+  .ws-table td.col-content input,
+  .ws-table tr:not(.subrow):not(.subtotal):not(.unselected-row):not(.add-opt-row) td.num,
+  .ws-table tr:not(.subrow):not(.subtotal):not(.unselected-row):not(.add-opt-row) td input.num {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  /* unselected option rows: grayed out, smaller, italic */
+  .ws-table tr.unselected-row td,
+  .ws-table tr.unselected-row td input {
+    color: var(--ink-3) !important;
+    font-weight: normal !important;
+    font-size: 12px !important;
+    font-style: italic !important;
+  }
+  .ws-table tr.unselected-row { background: #fafaf9; }
+  .opt-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .opt-checkbox-label input[type=checkbox] {
+    flex-shrink: 0;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+  }
+  .opt-checkbox-label .opt-content-input { flex: 1; min-width: 0; }
+  .ws-table tr.add-opt-row td {
+    background: #fafaf9 !important;
+    padding: 4px 12px !important;
+    text-align: left;
+  }
+  .add-meisai-btn {
+    border: 1px dashed var(--color-primary);
+    background: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 3px;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .add-meisai-btn:hover { background: var(--color-pale-blue); }
+  .add-meisai-btn.dup-btn {
+    border-color: var(--ink-3);
+    color: var(--ink-3);
+  }
+  .add-meisai-btn.dup-btn:hover { background: var(--line); }
+  .ws-table tr.add-unit-row td {
+    padding: 5px 10px !important;
+    background: var(--bg) !important;
+    border-top: 1px dashed var(--line) !important;
+  }
+  .ws-table tr.add-unit-row .add-item-row {
+    margin: 3px 0;
+  }
+  .add-item-row {
+    text-align: center;
+    margin: 12px 0;
+  }
+  /* 2ブロック目以降の先頭行: 上に区切り線 */
+  .ws-table tr.block-first-row td,
+  .ws-table tr.block-first-row th {
+    border-top: 2px solid var(--color-primary);
+  }
+  /* 区分セル内レイアウト */
+  .bunkin-cell-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    height: 100%;
+  }
+  /* ユニット削除ボタン */
+  .unit-delete-btn {
+    background: none;
+    border: 1px solid #ccc;
+    color: var(--ink-3);
+    font-size: 11px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    cursor: pointer;
+    align-self: flex-end;
+    line-height: 1.4;
+  }
+  .unit-delete-btn:hover { background: #fee; color: var(--color-accent); border-color: var(--color-accent); }
+  /* 備考欄（社内セクション末尾） */
+  .meisai-biko-row {
+    margin: 4px 0 8px;
+  }
+  .meisai-biko-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--line);
+    background: white;
+    padding: 6px 8px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    border-radius: 2px;
+  }
+  .meisai-biko-view {
+    padding: 6px 8px;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .grand-subtotal {
+    display: grid;
+    grid-template-columns: 1fr 110px 110px;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--label-bg);
+    font-size: 14px;
+    border: 1px solid var(--line);
+    margin-top: 8px;
+  }
+  .grand-subtotal-label {
+    text-align: right;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .grand-subtotal-value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  /* 仕込経費 + 掛率 のスタック表示 */
+  .cost-with-markup { display: block; }
+  .cost-with-markup .cost-input { width: 100%; text-align: right; }
+  .cost-with-markup .markup-line {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+    margin-top: 2px;
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  .cost-with-markup .markup-input {
+    width: 44px;
+    font-size: 10px !important;
+    text-align: right;
+    padding: 0 2px !important;
+    font-weight: normal !important;
+    border: 1px solid var(--line) !important;
+  }
+  .markup-display {
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-top: 1px;
+    text-align: right;
+  }
+  /* 仕様 + URL 行 */
+  .spec-row td {
+    border-top: none !important;
+    padding: 4px 12px 6px 8px !important;
+    background: #eef2fa !important;
+    font-size: 11px !important;
+    font-style: normal !important;
+    color: var(--ink-2) !important;
+  }
+  .spec-row .spec-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    line-height: 1.5;
+  }
+  .spec-row .spec-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-3);
+    border: 1px solid var(--line);
+    padding: 0 6px;
+    border-radius: 2px;
+    background: white;
+  }
+  .spec-row .spec-text { color: var(--ink); }
+  /* ===== 相見積セクション（編集中のみ表示・コンパクト） ===== */
+  .aimitsumori-section {
+    border-top: 1px dashed var(--line);
+    background: #fafaf8;
+    overflow: hidden;
+  }
+  .aimitsumori-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 8px;
+    background: var(--label-bg);
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .aimitsumori-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .aimitsumori-spec-bar {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    flex: 1;
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  .aimitsumori-spec-bar span {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 0 4px;
+  }
+  .aimitsumori-spec-bar .spec-empty {
+    color: var(--ink-3);
+    font-style: italic;
+    border: none;
+    background: none;
+    padding: 0;
+  }
+  .aimitsumori-btn {
+    font-size: 10px;
+    padding: 1px 7px;
+    border: 1px solid var(--color-primary);
+    border-radius: 2px;
+    background: white;
+    color: var(--color-primary);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .aimitsumori-btn:hover { background: var(--color-primary); color: white; }
+  .aimitsumori-btn--del { border-color: var(--color-accent); color: var(--color-accent); }
+  .aimitsumori-btn--del:hover { background: var(--color-accent); color: white; }
+  .aimitsumori-import-panel {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--line);
+    background: white;
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .aimitsumori-import-panel textarea {
+    flex: 1;
+    height: 48px;
+    font-size: 10px;
+    font-family: monospace;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 2px 4px;
+    resize: vertical;
+  }
+  .aimitsumori-import-btn {
+    font-size: 10px;
+    padding: 2px 8px;
+    border: 1px solid var(--color-primary);
+    border-radius: 2px;
+    background: var(--color-primary);
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  /* 相見積グリッド（table廃止→CSS Grid） */
+  .aimitsumori-grid {
+    border-top: 1px solid var(--line);
+    font-size: 11px;
+  }
+  .ai-row {
+    display: grid;
+    grid-template-columns: 120px 44px 90px 1fr 36px;
+    height: 26px;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    background: white;
+  }
+  .ai-row.ai-header {
+    background: var(--label-bg);
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--ink-2);
+  }
+  .ai-row.ai-selected { background: #f0f7ec; }
+  .ai-row > span {
+    padding: 0 6px;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--line);
+    box-sizing: border-box;
+  }
+  .ai-row > span:last-child { border-right: none; }
+  .ai-co { gap: 2px; }
+  .ai-co input { flex: 1; min-width: 0; }
+  .ai-remove-btn {
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 0 2px;
+    line-height: 1;
+  }
+  .ai-remove-btn:hover { color: var(--color-accent); }
+  .ai-co-link { flex-shrink: 0; font-size: 10px; color: var(--link); text-decoration: none; }
+  .ai-co-link:hover { text-decoration: underline; }
+  .ai-tk { justify-content: center; }
+  .ai-pr { justify-content: flex-end; font-variant-numeric: tabular-nums; }
+  .ai-ad { justify-content: center; }
+  .ai-row input:not([type=checkbox]) {
+    width: 100%;
+    height: 20px;
+    padding: 0 2px;
+    box-sizing: border-box;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 11px;
+    color: var(--ink);
+  }
+  .ai-pr input { text-align: right; }
+  .ai-row input[type=checkbox] { cursor: pointer; width: 13px; height: 13px; }
+  .ai-add-row { border-top: 1px dashed var(--line); padding: 2px 6px; background: #fafaf8; }
+  .ai-add-row-btn {
+    border: none; background: none; cursor: pointer;
+    font-size: 10px; color: var(--color-primary); padding: 0;
+  }
+  .ai-add-row-btn:hover { text-decoration: underline; }
+  .aimitsumori-footer {
+    padding: 3px 8px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .aimitsumori-apply-btn {
+    font-size: 10px;
+    padding: 1px 10px;
+    border: 1px solid var(--color-accent);
+    border-radius: 2px;
+    background: white;
+    color: var(--color-accent);
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .aimitsumori-apply-btn:hover { background: var(--color-accent); color: white; }
+  .aimitsumori-toast { font-size: 10px; color: var(--ink-3); }
+  /* 適合表示（Claude が記入、読み取り専用） */
+  .tekigo-display {
+    font-size: 12px;
+    font-weight: 700;
+    display: block;
+    text-align: center;
+    line-height: 20px;
+  }
+  .tekigo-display.maru    { color: #3a9; }
+  .tekigo-display.sankaku { color: #c90; }
+  .tekigo-display.batsu   { color: var(--color-accent); }
+  .tekigo-display.empty   { color: var(--ink-3); font-size: 11px; font-weight: normal; }
+  /* 相見積行（テーブル内 tr のラッパー） */
+  .aimitsumori-unit-row .aimitsumori-section {
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
+  .aimitsumori-grid a {
+    color: var(--link);
+    text-decoration: underline;
+    font-size: 11px;
+  }
+  .aimitsumori-grid a:hover { opacity: .75; }
+  /* 一覧画面: 仕込情報を請求額セルに表示 */
+  .shikomi-note {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+  .spec-row a {
+    color: var(--link);
+    text-decoration: underline;
+    font-size: 11px;
+    word-break: break-all;
+  }
+  .spec-row input.spec-input,
+  .spec-row input.url-input {
+    border: 1px solid var(--line) !important;
+    background: white !important;
+    padding: 2px 6px !important;
+    font-size: 11px !important;
+    font-style: normal !important;
+    color: var(--ink) !important;
+    font-weight: normal !important;
+  }
+  .spec-row input.spec-input { flex: 2; min-width: 200px; }
+  .spec-row input.url-input { flex: 1; min-width: 180px; }
+  .spec-row input.spec-mini-input,
+  .spec-row select.spec-mini-select {
+    border: 1px solid var(--line) !important;
+    background: white !important;
+    padding: 2px 6px !important;
+    font-size: 11px !important;
+    font-style: normal !important;
+    color: var(--ink) !important;
+    font-weight: normal !important;
+    width: 110px;
+  }
+  .spec-row select.spec-mini-select { width: auto; min-width: 80px; }
+  .spec-row .group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .spec-row .group b {
+    font-weight: 600;
+    color: var(--ink-3);
+    margin-right: 2px;
+  }
+
+  /* TOTALS */
+  .ws-totals {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+  .ws-totals .cell {
+    padding: 8px 12px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ws-totals .cell:last-child { border-right: none; }
+  .ws-totals .cell .lbl {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 10px;
+  }
+  .ws-totals .cell .val {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .ws-totals .cell.profit-rate { background: var(--color-warm-cream); }
+  .ws-totals .cell.profit-amount { background: var(--color-yellow); }
+  .ws-totals .cell.gaichu-total { background: var(--color-teal); color: white; }
+  .ws-totals .cell.gaichu-total .lbl { color: rgba(255,255,255,0.85); }
+  .ws-totals .cell.bill-net { background: var(--color-pale-blue); }
+  .ws-totals .cell.bill-gross { background: var(--color-primary); color: white; }
+  .ws-totals .cell.bill-gross .lbl { color: rgba(255,255,255,0.85); }
+
+  /* BIKO */
+  .ws-biko {
+    padding: 8px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    font-size: 12px;
+    align-items: start;
+  }
+  .ws-biko .lbl { font-weight: 600; padding-top: 4px; }
+  .ws-biko textarea {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid var(--line);
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: 12px;
+    resize: vertical;
+    background: var(--field-bg);
+  }
+
+  /* MEMO PANEL */
+  .ws-memo-panel {
+    margin: 12px;
+    border: 1px solid var(--line);
+    background: white;
+  }
+  .ws-memo-panel h3 {
+    background: var(--section-bg);
+    color: var(--section-fg);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .memo-block { border-bottom: 1px solid var(--line); padding: 10px 14px; }
+  .memo-block:last-child { border-bottom: none; }
+  .memo-block .memo-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .memo-block .memo-head .label { font-weight: 600; color: var(--ink); font-size: 12px; }
+  .memo-block .memo-note { font-size: 11px; color: var(--ink-3); }
+  .memo-block table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .memo-block table th, .memo-block table td { border: 1px solid var(--line); padding: 3px 6px; background: white; }
+  .memo-block table th { background: var(--label-bg); font-weight: 600; font-size: 10px; }
+  .memo-block table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .memo-block .formula { font-size: 10px; color: var(--ink-3); margin-top: 4px; }
+
+  /* TickTick */
+  .ticktick-info {
+    margin: 12px;
+    padding: 8px 14px;
+    background: white;
+    border: 1px solid var(--line);
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ticktick-info .tt-title { font-weight: 600; color: var(--ink); }
+  .ticktick-info .tt-meta { color: var(--ink-3); font-size: 11px; }
+
+  /* READ-ONLY MODE: hide input borders, make read like text */
+  .worksheet.read-only input,
+  .worksheet.read-only select,
+  .worksheet.read-only textarea {
+    border-color: transparent !important;
+    background: transparent !important;
+    pointer-events: none;
+  }
+  .worksheet.read-only .ws-table td input { border-color: transparent !important; }
+  .worksheet.read-only label { cursor: default; }
+  /* 採用チェックボックスだけは read-only でも操作可（即保存される） */
+  .worksheet.read-only input[type=checkbox][data-meisai-select] {
+    pointer-events: auto !important;
+    cursor: pointer;
+  }
+  .worksheet.read-only .opt-checkbox-label {
+    cursor: default;
+  }
+  .worksheet.read-only .opt-checkbox-label input[type=checkbox] {
+    cursor: pointer;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 200;
+  }
+  .empty { text-align: center; padding: 60px 20px; color: var(--ink-3); }
+
+  /* SUMMARY BAR */
+  #jobs-summary .ws-totals {
+    margin-top: 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* FOLDER TABS */
+  .main-tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    border-bottom: 2px solid var(--line-2);
+    margin-bottom: 28px;
+  }
+  .main-tab {
+    padding: 12px 36px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    background: none;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--ink-4);
+    cursor: pointer;
+    font-family: inherit;
+    line-height: 1;
+  }
+  .main-tab.active {
+    background: var(--bg);
+    color: var(--ink);
+    border-color: var(--line-2);
+    border-bottom: 2px solid var(--bg);
+    margin-bottom: -2px;
+    padding-bottom: 16px;
+  }
+  .main-tab:hover:not(.active) { color: var(--ink-2); }
+
+  /* ====== MINUTES TAB ====== */
+  .minutes-toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .minutes-search { flex: 1; min-width: 200px; }
+  .minutes-search input {
+    width: 100%;
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--card-bg);
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .minutes-filter select {
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--card-bg);
+    font-size: 13px;
+    font-family: inherit;
+    min-width: 140px;
+  }
+  .btn-add-minute {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 4px;
+    background: var(--color-navy);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-add-minute:hover { opacity: 0.85; }
+  .btn-add-minute:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .minutes-list { display: flex; flex-direction: column; gap: 8px; }
+  .minute-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.1s;
+  }
+  .minute-card:hover { border-color: var(--ink); }
+  .minute-card-head {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .minute-source-icon {
+    font-size: 14px;
+    width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .minute-datetime {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+  .minute-client {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .minute-job-no {
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .minute-job-no.is-new {
+    color: var(--color-coral);
+    font-weight: 600;
+  }
+  .minute-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .minute-card-summary {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .minute-card-counts {
+    display: flex;
+    gap: 14px;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .minute-card-counts span.has { color: var(--color-navy); font-weight: 600; }
+  .minute-card-counts span.applied { color: var(--color-green); font-weight: 600; }
+
+  /* MINUTE MODAL (詳細・追加) */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(20,20,30,0.45);
+    z-index: 1000;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 760px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  }
+  .modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .modal-head h2 { font-size: 18px; font-weight: 700; }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--ink-3);
+    line-height: 1;
+    padding: 4px 10px;
+  }
+  .modal-close:hover { color: var(--ink); }
+  .modal-body { padding: 20px; }
+  .modal-foot {
+    padding: 14px 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .modal-btn {
+    padding: 9px 18px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--card-bg);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .modal-btn.primary {
+    background: var(--color-navy);
+    color: white;
+    border-color: var(--color-navy);
+    font-weight: 600;
+  }
+  .modal-btn.primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .modal-btn.danger { color: var(--color-pink); }
+  .modal-btn:hover:not(:disabled) { border-color: var(--ink); }
+
+  .source-picker {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .source-btn {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--card-bg);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .source-btn:hover { border-color: var(--ink); background: var(--bg); }
+  .source-btn.active { border-color: var(--color-navy); background: var(--color-secondary); }
+  .source-btn .icon { font-size: 22px; }
+  .source-btn .label { font-size: 13px; font-weight: 600; }
+  .source-btn .desc { font-size: 11px; color: var(--ink-3); display: block; margin-top: 2px; }
+
+  .form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  .form-row label {
+    font-size: 12px;
+    color: var(--ink-2);
+    min-width: 90px;
+    font-weight: 600;
+  }
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--field-bg);
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .form-row textarea {
+    min-height: 200px;
+    resize: vertical;
+    line-height: 1.6;
+    font-family: -apple-system, "Hiragino Sans", monospace;
+  }
+
+  .digest-section {
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    border-radius: 4px;
+    background: var(--bg);
+  }
+  .digest-section h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-2);
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .digest-section h4 .count {
+    color: var(--ink-4);
+    font-weight: 500;
+  }
+  .digest-section ul { list-style: none; }
+  .digest-section li {
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 6px 0;
+    border-top: 1px dashed var(--line);
+    color: var(--ink);
+  }
+  .digest-section li:first-child { border-top: none; }
+  .digest-section li .meta {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .digest-section.empty li { color: var(--ink-4); font-style: italic; }
+
+  .applied-banner {
+    background: var(--color-cream);
+    border-left: 3px solid var(--color-green);
+    padding: 8px 12px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  .processing-banner {
+    background: #fff7e0;
+    border-left: 3px solid var(--color-yellow);
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+
+  .job-minute-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-left: 8px;
+    padding: 2px 8px;
+    background: var(--color-secondary);
+    color: var(--color-navy);
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+  .job-minute-badge:hover { background: var(--color-primary); color: white; }
+
+  /* CLIENT LIST */
+  .client-list { display: flex; flex-direction: column; gap: 6px; }
+  .client-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .client-summary-row {
+    display: grid;
+    grid-template-columns: 2fr 1.8fr 2.4fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .client-summary-row:hover { background: #faf9f6; }
+  .client-name { font-size: 14px; font-weight: 700; }
+  .client-kana { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .client-contact { font-size: 12px; color: var(--ink-2); }
+  .client-email { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .client-latest { font-size: 12px; }
+  .client-latest .job-line { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .client-latest .job-name { color: var(--ink-2); }
+  .client-latest .job-amount { font-weight: 700; font-variant-numeric: tabular-nums; margin-left: auto; }
+  .client-latest .no-job { color: var(--ink-4); font-size: 11px; }
+  .client-chevron { color: var(--ink-3); font-size: 12px; transition: transform 0.15s; }
+  .client-card.expanded .client-chevron { transform: rotate(180deg); }
+
+  .client-detail {
+    border-top: 1px solid var(--line);
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    background: #faf9f6;
+    font-size: 12px;
+  }
+  .client-detail-section { display: flex; flex-direction: column; gap: 10px; }
+  .client-detail-label {
+    font-size: 10px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+  .client-detail-value { color: var(--ink-2); line-height: 1.6; }
+  .client-jobs-mini { display: flex; flex-direction: column; gap: 4px; }
+  .client-jobs-mini a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-2);
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+  }
+  .client-jobs-mini a:hover { color: var(--ink); }
+  .client-jobs-mini .job-no { color: var(--ink-3); font-size: 11px; min-width: 48px; }
+  .client-jobs-mini .job-amount-mini { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  /* FOOTER */
+  footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-2);
+    font-size: 11px;
+    color: var(--ink-3);
+    text-align: center;
+  }
+
+  @media (max-width: 820px) {
+
+    .ws-client-box .row-spec { grid-template-columns: repeat(3, 1fr); }
+    .ws-totals { grid-template-columns: repeat(2, 1fr); }
+    .ws-header { grid-template-columns: 1fr !important; gap: 8px !important; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header class="hero">
+  <div class="title-block" style="margin-top:28px;">
+    <h1><img src="assets/logo.svg" alt="IDEARNEST" style="height:42px; width:auto; display:block; margin-bottom:6px;"></h1>
+    <div class="sub" id="hero-sub">会社名</div>
+  </div>
+</header>
+
+<nav class="main-tabs">
+  <button class="main-tab active" data-tab="jobs">WORKSHEET</button>
+  <button class="main-tab" data-tab="clients">CLIENTS</button>
+  <button class="main-tab" data-tab="minutes">MINUTES</button>
+  <div class="meta-block" style="margin-left:auto; padding-bottom:6px;">
+    <strong id="today-date"></strong>
+    <span id="generated-at"></span>
+    <div id="server-status" class="server-status offline">静的モード（編集不可）</div>
+    <button id="btn-sync-tt" style="display:none; margin-top:4px; font-size:11px; padding:2px 10px; border:1px solid var(--line); border-radius:3px; cursor:pointer; background:var(--card-bg);" title="TickTick から最新の工程を取得して WORKSHEET を更新">TickTick 同期</button>
+  </div>
+</nav>
+
+<section id="tab-jobs">
+  <div class="controls">
+    <div class="controls-top">
+      <div class="search-box">
+        <input type="text" id="search" placeholder="キーワード検索（スペース区切りでAND）…">
+      </div>
+      <button id="btn-adv" class="btn-adv">絞り込み</button>
+      <button class="btn-new-job" id="btn-new-job" disabled title="サーバ起動中のみ使用可">＋ 新規 WORKSHEET</button>
+    </div>
+    <div class="adv-panel" id="adv-panel" style="display:none"></div>
+    <div class="pills" id="status-pills"></div>
+  </div>
+  <div class="jobs" id="jobs-list"></div>
+  <div id="jobs-summary"></div>
+</section>
+
+<section id="tab-clients" style="display:none">
+  <div id="client-list-root"></div>
+</section>
+
+<section id="tab-minutes" style="display:none">
+  <div class="minutes-toolbar">
+    <div class="minutes-search">
+      <input type="text" id="minutes-search" placeholder="議事録を検索（タイトル・サマリ・タグ）…">
+    </div>
+    <div class="minutes-filter">
+      <select id="minutes-filter-client">
+        <option value="">クライアント：全て</option>
+      </select>
+    </div>
+    <div class="minutes-filter">
+      <select id="minutes-filter-source">
+        <option value="">入力ソース：全て</option>
+        <option value="line">LINE</option>
+        <option value="email">メール</option>
+        <option value="phone">電話（録音なし）</option>
+        <option value="meeting">打ち合わせ（録音なし）</option>
+        <option value="audio">録音あり（電話/打ち合わせ）</option>
+        <option value="manual">手入力</option>
+      </select>
+    </div>
+    <button class="btn-add-minute" id="btn-add-minute" disabled title="サーバ起動中のみ使用可">＋ 議事録追加</button>
+  </div>
+  <div class="minutes-list" id="minutes-list"></div>
+  <div id="minutes-summary" style="text-align:center; color:var(--ink-3); font-size:12px; padding:20px;"></div>
+</section>
+
+<!-- 議事録 詳細・追加 モーダル -->
+<div class="modal-backdrop" id="minute-modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="minute-modal-title">議事録</h2>
+      <button class="modal-close" id="minute-modal-close">×</button>
+    </div>
+    <div class="modal-body" id="minute-modal-body"></div>
+    <div class="modal-foot" id="minute-modal-foot"></div>
+  </div>
+</div>
+
+<datalist id="bunkin-options">
+  <option value="デザイン費">
+  <option value="印刷費">
+  <option value="撮影費">
+  <option value="制作費">
+  <option value="原稿費">
+  <option value="その他">
+</datalist>
+
+<datalist id="media-options">
+  <option value="データ">
+  <option value="印刷物">
+  <option value="WEB">
+  <option value="その他">
+</datalist>
+
+<footer id="footer"></footer>
+
+</main>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  let D = window.IDEARNEST;
+  if (!D) {
+    document.getElementById('jobs-list').innerHTML = '<div class="empty">data.js が見つかりません。<br>ターミナルで <code>cd ~/IDEARNEST && python3 scripts/build_data_js.py</code> を実行してください。</div>';
+    return;
+  }
+
+  const STATUS_VALUES = ['見積', '受注', '請求OK', '請求書発行済', '入金確認済', '中止'];
+  const STAFF = (D.settings?.staff || []).map(s => s.name);
+
+  const STATE = {
+    search: '',
+    statusFilter: '進行中',
+    expandedKey: null,
+    editingKey: null,
+    draft: null,
+    serverOnline: false,
+    isNewJob: false,
+    // 詳細絞り込み
+    showAdvanced: false,
+    clientFilter: '',
+    billingMonthFrom: '',
+    billingMonthTo: '',
+    staffFilter: '',
+    mediaFilter: '',
+  };
+
+  // ====== HELPERS ======
+  const $ = (sel) => document.querySelector(sel);
+  const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtYen = (n) => n == null || n === 0 ? '' : '¥' + Number(n).toLocaleString('ja-JP');
+  const fmtDate = (s) => s ? s.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$1/$2/$3') : '';
+  const calcTaxIncl = (n, rate=10) => n == null ? null : Math.round(n * (1 + rate/100));
+  const jobKey = (j) => j.制作番号 != null ? `n_${j.制作番号}` : `t_${j.TickTick_task_id || j.製品名}`;
+  const jobIsActive = (j) => j.状態 === '受注' || j.状態 === '見積' || j.状態 === '請求OK';
+  const sumMeisai = (j) => {
+    let total = 0;
+    (j.明細 || []).forEach(m => {
+      (m.選択肢 || []).forEach(opt => { if (opt.選択) total += (opt.金額 || 0); });
+    });
+    return total;
+  };
+  const sumMeisaiTaxIncl = (j) => {
+    let total = 0;
+    (j.明細 || []).forEach(m => {
+      const rate = m.税率 || 10;
+      (m.選択肢 || []).forEach(opt => {
+        if (opt.選択) total += (calcTaxIncl(opt.金額, rate) || 0);
+      });
+    });
+    return total;
+  };
+  const sumGaichuCost = (j) => {
+    let t = 0;
+    (j.外注 || []).forEach(g => (g.選択肢 || []).forEach(o => { if (o.選択) t += (o.仕込経費 || 0); }));
+    return t;
+  };
+  const sumGaichuBill = (j) => {
+    let t = 0;
+    (j.外注 || []).forEach(g => (g.選択肢 || []).forEach(o => { if (o.選択) t += (o.請求額 || 0); }));
+    return t;
+  };
+  const sumGaichuBillTax = (j) => {
+    let t = 0;
+    (j.外注 || []).forEach(g => (g.選択肢 || []).forEach(o => { if (o.選択) t += (calcTaxIncl(o.請求額, 10) || 0); }));
+    return t;
+  };
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  function thisMonth() {
+    const d = new Date();
+    return `${String(d.getFullYear()).slice(2)}.${String(d.getMonth()+1).padStart(2,'0')}`;
+  }
+
+  // ====== SERVER ======
+  // data.js を再取得してUIを再描画する共通ヘルパー
+  async function reloadData() {
+    const newScript = await fetch('data.js?_=' + Date.now()).then(r => r.text());
+    eval(newScript);
+    D = window.IDEARNEST;
+    renderHeader();
+    renderStats();
+    renderPills();
+    renderJobs();
+    renderMinutes();
+  }
+
+  async function syncTickTick(showToastMsg = false) {
+    const btn = document.getElementById('btn-sync-tt');
+    if (btn) { btn.disabled = true; btn.textContent = '同期中...'; }
+    try {
+      const r = await fetch('/api/regenerate', {method:'POST', body: '{}'});
+      if (r.ok) {
+        await reloadData();
+        if (showToastMsg) showToast('TickTick 工程を同期しました', 'success');
+      }
+    } catch (e) { /* サーバなしの場合は無視 */ }
+    if (btn) { btn.disabled = false; btn.textContent = 'TickTick 同期'; }
+  }
+
+  async function checkServer() {
+    try {
+      const r = await fetch('/api/regenerate', {method:'POST', body: '{}'});
+      STATE.serverOnline = r.ok;
+      if (r.ok) {
+        // 再生成完了後 data.js を再取得して最新 TickTick 工程を表示
+        await reloadData();
+      }
+    } catch (e) { STATE.serverOnline = false; }
+    renderServerStatus();
+    // 同期ボタンはサーバ稼働時のみ表示
+    const syncBtn = document.getElementById('btn-sync-tt');
+    if (syncBtn) syncBtn.style.display = STATE.serverOnline ? 'inline-block' : 'none';
+  }
+  function renderServerStatus() {
+    const el = $('#server-status');
+    if (STATE.serverOnline) {
+      el.className = 'server-status online';
+      el.textContent = 'サーバ稼働中（編集可）';
+    } else {
+      el.className = 'server-status offline';
+      el.textContent = '静的モード — 編集には python3 scripts/serve.py 起動';
+    }
+    const newBtn = document.getElementById('btn-new-job');
+    if (newBtn) newBtn.disabled = !STATE.serverOnline;
+    const addMinBtn = document.getElementById('btn-add-minute');
+    if (addMinBtn) addMinBtn.disabled = !STATE.serverOnline;
+  }
+
+  function showToast(msg, color='normal') {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    if (color === 'error') t.style.background = '#b32424';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2200);
+  }
+
+  // ====== RENDER: HEADER / STATS / PILLS ======
+  function renderHeader() {
+    const now = new Date();
+    const days = ['日','月','火','水','木','金','土'];
+    $('#today-date').textContent = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${days[now.getDay()]}）`;
+    $('#generated-at').textContent = 'data: ' + (D.generated_at || '').replace('T',' ');
+    $('#hero-sub').textContent = D.settings?.company?.name || '会社名';
+  }
+  function renderStats() { /* 廃止 */ }
+  function renderPills() {
+    const jobs = D.jobs || [];
+    const counts = {
+      '進行中': jobs.filter(jobIsActive).length,
+      '見積': jobs.filter(j=>j.状態==='見積').length,
+      '受注': jobs.filter(j=>j.状態==='受注').length,
+      '請求OK': jobs.filter(j=>j.状態==='請求OK').length,
+      '請求書発行済': jobs.filter(j=>j.状態==='請求書発行済').length,
+      '入金確認済': jobs.filter(j=>j.状態==='入金確認済').length,
+      '中止': jobs.filter(j=>j.状態==='中止').length,
+      'すべて': jobs.length,
+    };
+    const order = ['進行中','見積','受注','請求OK','請求書発行済','入金確認済','中止','すべて'];
+    $('#status-pills').innerHTML = order.map(k => `
+      <button class="pill ${STATE.statusFilter===k?'active':''}" data-filter="${k}">${k}<span class="count">${counts[k]}</span></button>
+    `).join('');
+    $('#status-pills').querySelectorAll('.pill').forEach(btn => {
+      btn.addEventListener('click', () => { STATE.statusFilter = btn.dataset.filter; renderPills(); renderJobs(); });
+    });
+  }
+
+  // ====== JOBS ======
+
+  // 案件の全テキストを平坦化（AND検索用）
+  function jobText(j) {
+    const parts = [
+      j.制作番号, j.クライアント, j.末端クライアント, j.製品名,
+      j.担当, j.媒体, j.状態, j.請求月, j.サイズ, j.数量,
+      j.用紙, j.加工, j.色数, j.現在の状況,
+    ];
+    for (const m of (j.明細 || []))
+      for (const o of (m.選択肢 || [])) parts.push(o.内容, o.備考);
+    for (const g of (j.外注 || [])) {
+      parts.push(g.発注先);
+      for (const o of (g.選択肢 || [])) parts.push(o.内容, o.サイズ, o.数量, o.用紙, o.媒体);
+    }
+    return parts.map(v => String(v ?? '')).join(' ').toLowerCase();
+  }
+
+  function applyFilter(jobs) {
+    let f = jobs;
+    // ステータスフィルター
+    if (STATE.statusFilter === '進行中') f = f.filter(jobIsActive);
+    else if (STATE.statusFilter !== 'すべて') f = f.filter(j => j.状態 === STATE.statusFilter);
+    // キーワード AND 検索
+    if (STATE.search) {
+      const tokens = STATE.search.toLowerCase().split(/\s+/).filter(Boolean);
+      f = f.filter(j => { const t = jobText(j); return tokens.every(tk => t.includes(tk)); });
+    }
+    // 詳細絞り込み
+    if (STATE.clientFilter)      f = f.filter(j => j.クライアント === STATE.clientFilter);
+    if (STATE.billingMonthFrom)  f = f.filter(j => (j.請求月 || '') >= STATE.billingMonthFrom);
+    if (STATE.billingMonthTo)    f = f.filter(j => (j.請求月 || '') <= STATE.billingMonthTo);
+    if (STATE.staffFilter)       f = f.filter(j => j.担当 === STATE.staffFilter);
+    if (STATE.mediaFilter)       f = f.filter(j => j.媒体 === STATE.mediaFilter);
+    return f.slice().sort((a,b) => (b.制作番号||-1) - (a.制作番号||-1));
+  }
+
+  function hasAdvFilter() {
+    return !!(STATE.clientFilter || STATE.billingMonthFrom || STATE.billingMonthTo || STATE.staffFilter || STATE.mediaFilter);
+  }
+
+  function renderAdvPanel() {
+    const panel = document.getElementById('adv-panel');
+    if (!panel) return;
+    const allJobs = D.jobs || [];
+    const uniq = (arr) => [...new Set(arr.filter(Boolean))].sort();
+    const clients = uniq(allJobs.map(j => j.クライアント));
+    const staffs  = uniq(allJobs.map(j => j.担当));
+    const medias  = uniq(allJobs.map(j => j.媒体));
+
+    const sel = (id, arr, val) =>
+      `<select id="${id}" class="adv-select">
+        <option value="">（すべて）</option>
+        ${arr.map(v => `<option value="${escapeHtml(v)}"${v===val?' selected':''}>${escapeHtml(v)}</option>`).join('')}
+      </select>`;
+
+    panel.innerHTML = `<div class="adv-row">
+      <div class="adv-group">
+        <span class="adv-label">クライアント</span>
+        ${sel('adv-client', clients, STATE.clientFilter)}
+      </div>
+      <div class="adv-group">
+        <span class="adv-label">請求月</span>
+        <div class="adv-month-range">
+          <input type="text" id="adv-mfrom" class="adv-input" value="${escapeHtml(STATE.billingMonthFrom)}" placeholder="26.04">
+          <span class="adv-month-sep">〜</span>
+          <input type="text" id="adv-mto" class="adv-input" value="${escapeHtml(STATE.billingMonthTo)}" placeholder="26.06">
+        </div>
+      </div>
+      <div class="adv-group">
+        <span class="adv-label">担当</span>
+        ${sel('adv-staff', staffs, STATE.staffFilter)}
+      </div>
+      <div class="adv-group">
+        <span class="adv-label">媒体</span>
+        ${sel('adv-media', medias, STATE.mediaFilter)}
+      </div>
+      ${hasAdvFilter() ? `<button class="adv-clear" id="adv-clear">クリア</button>` : ''}
+    </div>`;
+
+    // セレクト → パネル再描画あり
+    document.getElementById('adv-client').addEventListener('change', e => { STATE.clientFilter = e.target.value; renderJobs(); renderAdvPanel(); });
+    document.getElementById('adv-staff').addEventListener('change', e => { STATE.staffFilter = e.target.value; renderJobs(); renderAdvPanel(); });
+    document.getElementById('adv-media').addEventListener('change', e => { STATE.mediaFilter = e.target.value; renderJobs(); renderAdvPanel(); });
+    // テキスト入力 → フォーカス維持のためパネル再描画なし
+    document.getElementById('adv-mfrom').addEventListener('input', e => { STATE.billingMonthFrom = e.target.value.trim(); renderJobs(); });
+    document.getElementById('adv-mto').addEventListener('input',   e => { STATE.billingMonthTo   = e.target.value.trim(); renderJobs(); });
+    if (hasAdvFilter()) {
+      document.getElementById('adv-clear').addEventListener('click', () => {
+        STATE.clientFilter = STATE.billingMonthFrom = STATE.billingMonthTo = STATE.staffFilter = STATE.mediaFilter = '';
+        renderJobs(); renderAdvPanel(); updateAdvBtn();
+      });
+    }
+    updateAdvBtn();
+  }
+
+  function updateAdvBtn() {
+    const btn = document.getElementById('btn-adv');
+    if (!btn) return;
+    btn.classList.toggle('active', STATE.showAdvanced);
+    btn.classList.toggle('has-filter', hasAdvFilter());
+  }
+
+  // ===== 相見積定数（モジュールスコープ） =====
+  const AIMITSU_COS = ['ラクスル', 'プリントパック', 'グラフィック', '東京カラー印刷', 'プリントネット'];
+
+  // カテゴリ別 URL テーブル（各社の入口ページ）
+  const AIMITSU_URL_TABLE = {
+    '封筒': {
+      'ラクスル':      'https://raksul.com/print/envelope/',
+      'プリントパック': 'https://www.printpac.co.jp/contents/lineup/envelope/price.php',
+      'グラフィック':  'https://www.graphic.jp/price/envelope_imprinted/',
+      '東京カラー印刷': 'https://www.tcpc.co.jp/price_tables/index/%E6%97%A2%E8%A3%BD%E5%B0%81%E7%AD%92',
+      'プリントネット': 'https://odahara.jp/omitumori/envelope_ondemand.php',
+    },
+    'チラシ': {
+      'ラクスル':      'https://raksul.com/print/flyer/',
+      'プリントパック': 'https://www.printpac.co.jp/contents/lineup/flyer/price.php',
+      'グラフィック':  'https://www.graphic.jp/price/2291',
+      '東京カラー印刷': 'https://www.tcpc.co.jp/price_tables/index/%E3%83%81%E3%83%A9%E3%82%B7',
+      'プリントネット': 'https://odahara.jp/omitumori/flyer.php',
+    },
+    '名刺': {
+      'ラクスル':      'https://raksul.com/print/meishi/',
+      'プリントパック': 'https://www.printpac.co.jp/contents/lineup/meishi/price.php',
+      'グラフィック':  'https://www.graphic.jp/price/meishi/',
+      '東京カラー印刷': 'https://www.tcpc.co.jp/price_tables/index/%E5%90%8D%E5%88%BA',
+      'プリントネット': 'https://odahara.jp/omitumori/meishi.php',
+    },
+    'ポスター': {
+      'ラクスル':      'https://raksul.com/print/poster/',
+      'プリントパック': 'https://www.printpac.co.jp/contents/lineup/poster/price.php',
+      'グラフィック':  'https://www.graphic.jp/price/poster/',
+      '東京カラー印刷': 'https://www.tcpc.co.jp/price_tables/',
+      'プリントネット': 'https://odahara.jp/omitumori/',
+    },
+    'デフォルト': {
+      'ラクスル':      'https://raksul.com/print/',
+      'プリントパック': 'https://www.printpac.co.jp/contents/lineup/',
+      'グラフィック':  'https://www.graphic.jp/price/',
+      '東京カラー印刷': 'https://www.tcpc.co.jp/price_tables/',
+      'プリントネット': 'https://odahara.jp/omitumori/',
+    },
+  };
+
+  // 仕様・製品名からカテゴリを判定
+  function detectPrintCategory(spec, productName) {
+    const text = [spec.用紙||'', spec.サイズ||'', spec.加工||'', spec.媒体||'', productName||''].join(' ');
+    if (/封筒|角2|長3|角3/.test(text)) return '封筒';
+    if (/チラシ|フライヤー|flyer/i.test(text)) return 'チラシ';
+    if (/名刺|meishi/i.test(text)) return '名刺';
+    if (/ポスター|poster/i.test(text)) return 'ポスター';
+    return 'デフォルト';
+  }
+
+  // renderJobs後にフォーカスを復元するヘルパー
+  function renderJobsKeepFocus() {
+    const ae = document.activeElement;
+    let focusKey = null, focusAttr = null, selStart = null, selEnd = null;
+    if (ae) {
+      for (const a of ['meisai','opt','field','gopt','gaichu']) {
+        if (ae.dataset && ae.dataset[a] !== undefined) {
+          focusKey = ae.dataset[a]; focusAttr = `data-${a}`; break;
+        }
+      }
+      selStart = ae.selectionStart; selEnd = ae.selectionEnd;
+    }
+    renderJobs();
+    if (focusKey) {
+      const el = document.querySelector(`[${focusAttr}="${CSS.escape(focusKey)}"]`);
+      if (el) { el.focus(); try { el.setSelectionRange(selStart, selEnd); } catch(e) {} }
+    }
+  }
+  let _autoCalcTimer = null;
+  function scheduleAutoCalcRender() {
+    clearTimeout(_autoCalcTimer);
+    _autoCalcTimer = setTimeout(renderJobsKeepFocus, 500);
+  }
+
+  function renderJobs() {
+    const jobs = applyFilter(D.jobs || []);
+    const list = $('#jobs-list');
+    if (jobs.length === 0) {
+      list.innerHTML = '<div class="empty">該当する案件がありません</div>';
+    } else {
+      list.innerHTML = jobs.map(j => renderJobCard(j)).join('');
+      // Summary click → toggle expand
+      list.querySelectorAll('.job-card-summary').forEach(el => {
+        el.addEventListener('click', () => {
+          const card = el.closest('.job-card');
+          const key = card.dataset.key;
+          if (STATE.editingKey && STATE.editingKey !== key) {
+            if (!confirm('編集中の案件があります。破棄してこの案件を開きますか？')) return;
+            STATE.editingKey = null;
+            STATE.draft = null;
+          }
+          STATE.expandedKey = (STATE.expandedKey === key) ? null : key;
+          renderJobs();
+        });
+      });
+      // Wire up worksheet event handlers
+      jobs.forEach(j => {
+        const k = jobKey(j);
+        if (STATE.expandedKey === k) wireWorksheet(j);
+      });
+      // 議事録バッジ・リンク・ジャンプボタンのイベント
+      list.querySelectorAll('.job-minute-badge').forEach(b => {
+        b.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const jobNo = b.dataset.jobNo;
+          jumpToMinutesByJob(jobNo);
+        });
+      });
+      list.querySelectorAll('.job-minute-link').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openMinuteDetail(a.dataset.mid);
+        });
+      });
+      list.querySelectorAll('.btn-jump-minutes-job').forEach(b => {
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          jumpToMinutesByJob(b.dataset.jobNo);
+        });
+      });
+      list.querySelectorAll('.btn-jump-minutes-client').forEach(b => {
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          jumpToMinutesByClient(b.dataset.clientId);
+        });
+      });
+      // 進行履歴「さらに見る」ボタン
+      list.querySelectorAll('.tl-expand-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const jobNo = btn.dataset.tlExpand;
+          const restEl = document.getElementById(`tl-rest-${jobNo}`);
+          if (!restEl) return;
+          const open = restEl.style.display !== 'none';
+          restEl.style.display = open ? 'none' : '';
+          btn.textContent = open
+            ? `さらに ${restEl.querySelectorAll('.tl-item').length} 件 ▼`
+            : '閉じる ▲';
+        });
+      });
+    }
+    renderSummary(jobs);
+    $('#footer').innerHTML = `表示中 ${jobs.length}件 / 総案件 ${(D.jobs||[]).length}件 — IDEARNEST WORKSHEET`;
+  }
+
+  function jumpToMinutesByJob(jobNo) {
+    document.querySelector('.main-tab[data-tab="minutes"]').click();
+    const sb = $('#minutes-search');
+    if (sb) {
+      sb.value = jobNo || '';
+      sb.dispatchEvent(new Event('input'));
+    }
+  }
+
+  function jumpToMinutesByClient(clientId) {
+    // そのクライアントの議事録が存在するか確認
+    const hasMinutes = (D.minutes || []).some(m => m.client_id === clientId);
+    if (!hasMinutes) {
+      showToast(`「${clientId}」の記録はまだありません`, 'info');
+      return;
+    }
+    document.querySelector('.main-tab[data-tab="minutes"]').click();
+    // 検索ボックスをクリアしてクライアントフィルタをセット
+    const sb = $('#minutes-search');
+    if (sb) { sb.value = ''; sb.dispatchEvent(new Event('input')); }
+    // renderMinutes が dropdown を再構築した後に値をセット
+    setTimeout(() => {
+      const fc = $('#minutes-filter-client');
+      if (fc) {
+        fc.value = clientId || '';
+        fc.dispatchEvent(new Event('change'));
+      }
+    }, 50);
+  }
+
+  function renderSummary(jobs) {
+    const el = document.getElementById('jobs-summary');
+    if (!el) return;
+    if (jobs.length === 0) { el.innerHTML = ''; return; }
+
+    let billNet = 0, billGross = 0, gaichuCost = 0;
+    for (const j of jobs) {
+      billNet    += sumMeisai(j)       + sumGaichuBill(j);
+      billGross  += sumMeisaiTaxIncl(j) + sumGaichuBillTax(j);
+      gaichuCost += sumGaichuCost(j);
+    }
+    const grossProfit = billNet - gaichuCost;
+    const grossMargin = billNet > 0 ? (grossProfit / billNet * 100) : null;
+
+    const fmt  = n => '¥' + Number(n).toLocaleString('ja-JP');
+    const fmtP = n => n == null ? '—' : n.toFixed(1) + '%';
+
+    el.innerHTML = `<div class="ws-totals">
+      <div class="cell profit-rate"><span class="lbl">粗利率</span><span class="val">${fmtP(grossMargin)}</span></div>
+      <div class="cell profit-amount"><span class="lbl">粗利益</span><span class="val">${fmt(grossProfit)}</span></div>
+      <div class="cell gaichu-total"><span class="lbl">外注経費合計</span><span class="val">${fmt(gaichuCost)}</span></div>
+      <div class="cell bill-net"><span class="lbl">請求合計／税抜</span><span class="val">${fmt(billNet)}</span></div>
+      <div class="cell bill-gross"><span class="lbl">請求合計／税込</span><span class="val">${fmt(billGross)}</span></div>
+    </div>`;
+  }
+
+  // TickTick 達成率を小さな円グラフ（SVGドーナツ）で表現
+  function progressRing(done, total) {
+    if (!total) return '';
+    const pct = done / total;
+    const r = 10;
+    const circ = +(2 * Math.PI * r).toFixed(2);
+    const filled = +(circ * pct).toFixed(2);
+    const strokeStyle = pct >= 1 ? 'stroke:#2a7a4a' : 'stroke:var(--color-primary)';
+    const tip = `${done}/${total} 工程完了（${Math.round(pct * 100)}%）`;
+    return `<div class="progress-ring-wrap" title="${tip}">
+      <svg width="24" height="24" viewBox="0 0 28 28" aria-hidden="true">
+        <circle cx="14" cy="14" r="${r}" fill="none" stroke="#e0e0e0" stroke-width="4"/>
+        <circle cx="14" cy="14" r="${r}" fill="none" style="${strokeStyle}" stroke-width="4"
+          stroke-dasharray="${filled} ${circ}"
+          stroke-linecap="round"
+          transform="rotate(-90 14 14)"/>
+      </svg>
+      <div class="progress-ring-label">${done}/${total}</div>
+    </div>`;
+  }
+
+  function renderJobCard(j) {
+    const k = jobKey(j);
+    const expanded = STATE.expandedKey === k;
+    const idDisp = j.制作番号 != null ? `<strong>#${j.制作番号}</strong>` : '<strong>#撮影</strong>';
+    const stBadge = `<span class="badge ${j.状態||''}">${j.状態 || '-'}</span>`;
+    const tyBadge = j.種別 === '撮影' ? '<span class="badge 撮影">撮影</span>' : '';
+    const gaBadge = j.外注フラグ ? '<span class="badge 外注">外注</span>' : '';
+    const meta = [
+      j.依頼日 && `<span><strong>依頼:</strong>${fmtDate(j.依頼日)}</span>`,
+      j.見積日 && `<span><strong>見積:</strong>${fmtDate(j.見積日)}</span>`,
+      j.納品日 && `<span><strong>納品:</strong>${fmtDate(j.納品日)}</span>`,
+      j.請求月 && `<span><strong>請求月:</strong>${j.請求月}</span>`,
+      j.担当 && `<span><strong>担当:</strong>${j.担当}</span>`,
+    ].filter(Boolean).join('');
+    const cardProfit = (sumMeisai(j) + sumGaichuBill(j)) - sumGaichuCost(j);
+    const clientDisp = j.末端クライアント
+      ? `${escapeHtml(j.クライアント)} ／ ${escapeHtml(j.末端クライアント)}様`
+      : escapeHtml(j.クライアント);
+
+    const amountNum = cardProfit > 0
+      ? `<div class="card-amount-num"><span class="card-amount-value">${fmtYen(cardProfit)}</span><span class="card-amount-label">粗利</span></div>`
+      : '';
+
+    const minuteBadge = '';
+
+    // 折りたたみカードの「現在の工程」表示
+    // 優先: TickTick現在工程 → 全完了 → 現在の状況フォールバック
+    let currentStatus = '';
+    const ttItem = j.ticktick_current_item;
+    const ttId   = j.TickTick_task_id;
+    if (ttId) {
+      if (ttItem) {
+        currentStatus = `<div class="job-current is-tt" title="${escapeHtml(ttItem)}">${escapeHtml(ttItem)}</div>`;
+      } else {
+        currentStatus = `<div class="job-current is-done">全工程完了</div>`;
+      }
+    } else if (j.現在の状況) {
+      currentStatus = `<div class="job-current">${escapeHtml(j.現在の状況)}</div>`;
+    }
+
+    return `
+      <div class="job-card ${expanded?'expanded':''}" data-key="${k}">
+        <div class="job-card-summary">
+          <div class="card-info">
+            <div class="job-row1"><span class="job-id">${idDisp}</span>${minuteBadge}</div>
+            <div class="job-row2">${escapeHtml(j.製品名 || '(製品名未設定)')}</div>
+            <div class="job-row3">${clientDisp}</div>
+            ${currentStatus}
+            <div class="job-row4">${meta}</div>
+          </div>
+          <div class="card-amount">
+            ${progressRing(j.ticktick_done || 0, j.ticktick_total || 0)}
+            <span class="badges">${tyBadge}${gaBadge}${stBadge}</span>
+            ${amountNum}
+          </div>
+        </div>
+        ${expanded ? renderWorksheet(j) : ''}
+        ${expanded ? renderJobMinutes(j) : ''}
+      </div>
+    `;
+  }
+
+  function renderJobMinutes(j) {
+    const jobNo = j.制作番号 || '';
+
+    // j.メモ を進行ログエントリに変換
+    const memoEntries = (j.メモ || []).map(m => ({
+      type: 'memo',
+      date: typeof m === 'string' ? '' : (m.日付 || ''),
+      time: '',
+      text: typeof m === 'string' ? m : (m.内容 || m.text || ''),
+    })).filter(e => e.text.trim());
+
+    // 議事録エントリ
+    const mins = getMinutesByJob(jobNo);
+    const minuteEntries = mins.map(m => ({
+      type: 'minute',
+      date: m.date || '',
+      time: m.time || '',
+      text: m.title || '(無題)',
+      mid: m.id,
+      source: m.source_type,
+      sourceMeta: m.source_meta,
+      summary: (m.summary || '').slice(0, 50),
+    }));
+
+    // 新しい順にソート
+    const all = [...memoEntries, ...minuteEntries].sort((a, b) => {
+      const da = (a.date + a.time).replace(/\D/g, '');
+      const db = (b.date + b.time).replace(/\D/g, '');
+      return db.localeCompare(da);
+    });
+
+    const PREVIEW = 3;
+    const renderEntry = (e) => {
+      if (e.type === 'memo') {
+        return `<div class="tl-item tl-memo">
+          <span class="tl-date">${escapeHtml(e.date)}</span>
+          <span class="tl-dot"></span>
+          <span class="tl-text">${escapeHtml(e.text)}</span>
+        </div>`;
+      } else {
+        return `<a href="#" class="tl-item tl-minute job-minute-link" data-mid="${escapeHtml(e.mid)}">
+          <span class="tl-date">${escapeHtml(e.date)}${e.time ? ' ' + escapeHtml(e.time) : ''}</span>
+          <span class="tl-dot minute"></span>
+          ${sourceBadge(e.source, e.sourceMeta)}
+          <span class="tl-text">${escapeHtml(e.text)}</span>
+          ${e.summary ? `<span class="tl-summary">${escapeHtml(e.summary)}</span>` : ''}
+        </a>`;
+      }
+    };
+
+    const preview = all.slice(0, PREVIEW).map(renderEntry).join('');
+    const rest    = all.length > PREVIEW ? all.slice(PREVIEW).map(renderEntry).join('') : '';
+    const moreBtn = rest ? `
+      <div class="tl-more">
+        <button class="tl-expand-btn" data-tl-expand="${jobNo}">さらに ${all.length - PREVIEW} 件 ▼</button>
+        <div class="tl-rest" id="tl-rest-${jobNo}" style="display:none">${rest}</div>
+      </div>` : '';
+
+    const empty = all.length === 0
+      ? '<span class="tl-empty">進行履歴はまだありません</span>' : '';
+
+    return `<div class="job-timeline" data-tl-job="${jobNo}">
+      <div class="tl-header">
+        <strong class="tl-title">進行履歴（${all.length}件）</strong>
+        <button type="button" class="btn-jump-minutes-client" data-client-id="${escapeHtml(j.クライアント || '')}">このクライアントの全記録を見る</button>
+      </div>
+      ${empty}${preview}${moreBtn}
+    </div>`;
+  }
+
+  // ====== QUICK PANEL (編集なしで見える折りたたみパネル) ======
+  function renderQuickPanel(j, k) {
+    const isWsOpen = STATE.editingKey === k;
+    const current  = j.現在の状況 || '';
+    const memos    = (j.メモ || []).filter(m => {
+      const txt = typeof m === 'string' ? m : (m.内容 || m.text || '');
+      return txt.trim();
+    });
+
+    const currentChip = current
+      ? `<span class="qp-current-text">${escapeHtml(current)}</span>`
+      : `<span class="qp-current-text empty">—</span>`;
+
+    const historyHtml = memos.length > 0
+      ? memos.slice().reverse().map(m => {
+          const date = typeof m === 'string' ? '' : (m.日付 || '');
+          const text = typeof m === 'string' ? m : (m.内容 || m.text || '');
+          return `<div class="qp-task-item">
+            ${date ? `<span class="qp-task-date">${escapeHtml(date)}</span>` : ''}
+            <span>${escapeHtml(text)}</span>
+          </div>`;
+        }).join('')
+      : '';
+
+    const tasksSection = `
+      <div class="qp-section">
+        <span class="qp-label">現在のタスク</span>
+        <div class="qp-current-row" data-qp-toggle="${k}">
+          ${currentChip}
+          ${memos.length > 0 ? `<span class="qp-chevron" id="qp-chev-${k}">▼</span>` : ''}
+        </div>
+        <div class="qp-tasks-list" id="qp-tasks-${k}" style="display:none">
+          ${historyHtml}
+        </div>
+      </div>`;
+
+    const memoSection = `
+      <div class="qp-section">
+        <span class="qp-label">備考 <span class="qp-save-indicator" id="qp-saved-${k}"></span></span>
+        <textarea class="qp-memo-area" data-qp-memo="${k}" rows="2" placeholder="現在の状況・メモを入力（自動保存）">${escapeHtml(current)}</textarea>
+      </div>`;
+
+    const docBase  = j.制作番号 ? String(j.制作番号) : (j.TickTick_task_id || '');
+    const actBtns  = docBase ? `
+      <div class="qp-actions">
+        <a class="btn-sm" href="estimate.html?id=${encodeURIComponent(docBase)}" target="_blank">見積書</a>
+        <a class="btn-sm" href="invoice.html?id=${encodeURIComponent(docBase)}" target="_blank">請求書</a>
+      </div>` : '';
+
+    return `<div class="quick-panel" data-qp-key="${k}">
+      ${tasksSection}
+      ${memoSection}
+      ${actBtns}
+    </div>`;
+  }
+
+  // ====== WORKSHEET (FM-style, expanded inside card) ======
+  function renderWorksheet(jobOrig) {
+    const isEditing = STATE.editingKey === jobKey(jobOrig);
+    const j = isEditing ? STATE.draft : jobOrig;
+
+    const meisaiSubtotal = sumMeisai(j);
+    const meisaiTaxIncl = sumMeisaiTaxIncl(j);
+    const gaichuCost = sumGaichuCost(j);
+    const gaichuBill = sumGaichuBill(j);
+    const gaichuBillTax = sumGaichuBillTax(j);
+    const billNet = meisaiSubtotal + gaichuBill;
+    const billGross = meisaiTaxIncl + gaichuBillTax;
+    const profit = billNet - gaichuCost;
+    const profitRate = billNet > 0 ? (profit / billNet * 100) : 0;
+
+    // 全ブロックを1つのtableにまとめる。ヘッダーは共通1行のみ
+    const meisaiLen = (j.明細 || []).length;
+    const meisaiAllRows = (j.明細 || []).map((m, i) => {
+      const opts = m.選択肢 || [];
+      const breakdown = m.内訳_社内 || {};
+      const hasBreakdown = breakdown.仕込み経費 != null || breakdown.掛率 != null || breakdown.計算メモ;
+
+      // 区分セルのrowspan: 選択肢行数 + breakdown行1行
+      // （編集中は常に+1、閲覧中はbreakdownがある時だけ+1）
+      const extraRowspan = isEditing ? 2 : (hasBreakdown ? 1 : 0);
+
+      // 各選択肢を行に展開
+      const optRows = opts.map((opt, k) => {
+        const isFirst = k === 0;
+        const isSelected = !!opt.選択;
+        const removeBtn = isEditing && opts.length > 1
+          ? `<button class="row-remove-btn" data-opt-remove="${i}.${k}" title="この選択肢を削除">×</button>`
+          : '';
+        const checkbox = `<input type="checkbox" data-meisai-select="${i}.${k}" ${isSelected ? 'checked' : ''} title="採用">`;
+        const contentCell = isEditing
+          ? `<label class="opt-checkbox-label">${checkbox}<input data-opt="${i}.${k}.内容" class="opt-content-input" value="${escapeHtml(opt.内容||'')}" placeholder="内容">${removeBtn}</label>`
+          : `<label class="opt-checkbox-label">${checkbox}<span class="opt-content-input">${escapeHtml(opt.内容||'')}</span></label>`;
+        // 区分セル: 最初の行のみ表示。rowspan = 選択肢行 + breakdown行
+        const deleteUnitBtn = isEditing && meisaiLen > 1
+          ? `<button class="unit-delete-btn" data-meisai-delete="${i}" title="このユニットを削除">×</button>`
+          : '';
+        const bunkinCell = isFirst
+          ? `<td class="col-bunkin" rowspan="${opts.length + extraRowspan}"><div class="bunkin-cell-inner"><input data-meisai="${i}.区分" list="bunkin-options" value="${escapeHtml(m.区分||'')}" placeholder="区分">${deleteUnitBtn}</div></td>`
+          : '';
+        // 2ブロック目以降の先頭行にブロック区切り線（編集中のみ）
+        const trClass = [
+          isSelected ? '' : 'unselected-row',
+          (isEditing && i > 0 && isFirst) ? 'block-first-row' : ''
+        ].filter(Boolean).join(' ');
+        return `
+          <tr class="${trClass}">
+            ${bunkinCell}
+            <td class="col-content">${contentCell}</td>
+            <td><input class="num" data-opt="${i}.${k}.数量" value="${opt.数量??''}"></td>
+            <td><input class="num" data-opt="${i}.${k}.単価" value="${opt.単価??''}"></td>
+            <td class="num">${isEditing ? `<input class="num" data-opt="${i}.${k}.金額" value="${opt.金額??''}">` : fmtYen(opt.金額)}</td>
+          </tr>`;
+      }).join('');
+
+      // 内訳_社内 行: colspan=4（区分列は rowspan で上から延びてくる）
+      let breakdownRow = '';
+      if (isEditing) {
+        const sk = breakdown.仕込み経費 ?? '';
+        const ka = breakdown.掛率 ?? '';
+        const me = breakdown.計算メモ ?? '';
+        const calcResult = (breakdown.仕込み経費 != null && breakdown.掛率 != null)
+          ? `<span class="calc-result">＝ ${fmtYen(breakdown.仕込み経費 * breakdown.掛率)}</span>` : '';
+        breakdownRow = `<tr class="subrow"><td colspan="4">
+          <div class="breakdown-edit-row">
+            <span class="group">仕込
+              <input data-meisai="${i}.内訳_社内.仕込み経費" class="num inline-num" type="number" value="${sk}" placeholder="0">
+            </span>
+            × <span class="group">掛率
+              <input data-meisai="${i}.内訳_社内.掛率" class="num inline-num" type="number" step="0.1" value="${ka}" placeholder="2.0">
+            </span>
+            ${calcResult}
+            <span class="group memo-group">計算メモ
+              <input data-meisai="${i}.内訳_社内.計算メモ" class="inline-memo" value="${escapeHtml(me)}" placeholder="自由入力">
+            </span>
+          </div>
+        </td></tr>`;
+      } else if (hasBreakdown) {
+        const parts = [];
+        if (breakdown.仕込み経費 != null) parts.push(`仕込 <strong>${fmtYen(breakdown.仕込み経費)}</strong>`);
+        if (breakdown.掛率 != null) parts.push(`掛率 <strong>×${breakdown.掛率}</strong>`);
+        const calc = (breakdown.仕込み経費 != null && breakdown.掛率 != null)
+          ? `＝ <strong>${fmtYen(breakdown.仕込み経費 * breakdown.掛率)}</strong>` : '';
+        breakdownRow = `<tr class="subrow"><td colspan="4">
+          ${parts.join(' × ')} ${calc}
+          ${breakdown.計算メモ ? '— ' + escapeHtml(breakdown.計算メモ) : ''}
+        </td></tr>`;
+      }
+
+      const meisaiUnitAddRow = isEditing
+        ? `<tr class="add-unit-row"><td colspan="4"><div class="add-item-row">
+            <button class="add-meisai-btn" data-meisai-insert="${i}">＋ 項目を追加</button>
+            <button class="add-meisai-btn dup-btn" data-meisai-dup-at="${i}">＋ 項目を複製</button>
+          </div></td></tr>`
+        : '';
+      return `${optRows || `<tr><td colspan="5" style="padding:12px; text-align:center; color:var(--ink-3); font-style:italic;">明細未入力</td></tr>`}${breakdownRow}${meisaiUnitAddRow}`;
+    }).join('');
+
+    const meisaiRows = meisaiLen === 0
+      ? '<div style="padding:14px; text-align:center; color:var(--ink-3); font-style:italic; background:white; border:1px solid var(--line);">明細未入力</div>'
+      : `<table class="ws-table">
+          <thead><tr>
+            <th class="col-bunkin">区分</th><th>内容</th>
+            <th class="col-num">数量</th><th class="col-num">単価</th>
+            <th class="col-num">請求額</th>
+          </tr></thead>
+          <tbody>${meisaiAllRows}</tbody>
+        </table>`;
+    const meisaiAddBtn = isEditing && meisaiLen === 0
+      ? `<div class="add-item-row"><button class="add-meisai-btn" data-meisai-add>＋ 項目を追加</button></div>`
+      : '';
+    const bikoField = isEditing
+      ? `<div class="meisai-biko-row"><input class="meisai-biko-input" data-field="備考" value="${escapeHtml(j.備考||'')}" placeholder="備考（自由記述）"></div>`
+      : (j.備考 ? `<div class="meisai-biko-row meisai-biko-view">${escapeHtml(j.備考)}</div>` : '');
+
+    // 外注もユニットシステムで統一（社内と同構造）
+    // テーブル列: 発注先 | 外注作業概略 | 数量 | 単価 | 仕込額 | 請求額 (6列)
+    // 仕込経費は列表示 + breakdown subrow (編集中) で管理
+    const gaichuLen = (j.外注 || []).length;
+
+    const gaichuAllRows = (j.外注 || []).map((g, i) => {
+      const opts = g.選択肢 || [];
+      const specOpt = opts[0] || {};
+
+      // rowspan計算: コンテンツ行 + breakdown行(編集中のみ) + 仕様行 + 相見積行
+      const hasBd = isEditing;
+      const hasSp = isEditing || (specOpt.媒体 || specOpt.サイズ || specOpt.数量 || specOpt.加工 || specOpt.用紙 || specOpt.厚さ || specOpt.納期);
+      const rowspan = opts.length + (hasBd ? 1 : 0) + (hasSp ? 1 : 0) + (isEditing ? 2 : 0); // 相見積行+add-unit-rowは編集中のみ
+
+      // 相見積ユニットデータ（外注ユニット単位）
+      // null/undefined = 非表示（追加ボタン表示）、配列 = 表示（削除ボタン表示）
+      const hasAimitsu = g.相見積もり != null;
+      const aimitsuUnitRows = hasAimitsu ? (g.相見積もり || []) : [];
+      const aimitsuSpecParts = [specOpt.媒体, specOpt.サイズ, specOpt.数量, specOpt.用紙, specOpt.厚さ, specOpt.納期, specOpt.加工].filter(Boolean);
+      const aimitsuCategory = detectPrintCategory(specOpt, j.製品名);
+      const aimitsuUrlMap = AIMITSU_URL_TABLE[aimitsuCategory] || AIMITSU_URL_TABLE['デフォルト'];
+
+      const deleteUnitBtn = isEditing && gaichuLen > 1
+        ? `<button class="unit-delete-btn" data-gaichu-delete="${i}" title="このユニットを削除">×</button>`
+        : '';
+      // 一覧画面は <span> のみ（placeholder 非表示・空なら空白）
+      const vendorCell = isEditing
+        ? `<td class="col-bunkin-del" rowspan="${rowspan}">${deleteUnitBtn}</td>`
+        : `<td class="col-bunkin" rowspan="${rowspan}"><div class="bunkin-cell-inner">${escapeHtml(g.発注先||'')}</div></td>`;
+
+      const optRows = opts.map((opt, k) => {
+        const isFirst = k === 0;
+        const isSelected = !!opt.選択;
+        const removeBtn = isEditing && opts.length > 1
+          ? `<button class="row-remove-btn" data-gopt-remove="${i}.${k}" title="削除">×</button>`
+          : '';
+        const checkbox = `<input type="checkbox" data-gaichu-select="${i}.${k}" ${isSelected ? 'checked' : ''} title="採用">`;
+        const contentCell = isEditing
+          ? `<label class="opt-checkbox-label">${checkbox}<input data-gopt="${i}.${k}.内容" class="opt-content-input" value="${escapeHtml(opt.内容||'')}" placeholder="外注作業概略">${removeBtn}</label>`
+          : `<label class="opt-checkbox-label">${checkbox}<span class="opt-content-input">${escapeHtml(opt.内容||'')}</span></label>`;
+        // 一覧画面では選択状態によらず同じスタイル（unselected-row は編集中のみ）
+        const trClass = [
+          (isEditing && !isSelected) ? 'unselected-row' : '',
+          (isEditing && i > 0 && isFirst) ? 'block-first-row' : ''
+        ].filter(Boolean).join(' ');
+        return `
+          <tr class="${trClass}">
+            ${isFirst ? vendorCell : ''}
+            <td class="col-content">${contentCell}</td>
+            <td class="num">${isEditing ? `<input class="num" data-gopt="${i}.${k}.数量" value="${escapeHtml(opt.数量||'')}">` : (opt.数量 ?? '')}</td>
+            <td class="num">${isEditing ? `<input class="num" data-gopt="${i}.${k}.単価" value="${opt.単価??''}">` : (opt.単価 != null ? fmtYen(opt.単価) : '')}</td>
+            <td class="num">${opt.仕込経費 != null ? fmtYen(opt.仕込経費) : ''}</td>
+            <td class="num">${isEditing ? `<input class="num" data-gopt="${i}.${k}.請求額" value="${opt.請求額??''}">` : fmtYen(opt.請求額)}</td>
+          </tr>`;
+      }).join('');
+
+      // 仕込×掛率 breakdown行（コンテンツ行の直下、仕様行の上）
+      // colspan=4（発注先セルがrowspanで左列を占有、残り4列）
+      let breakdownRow = '';
+      if (isEditing) {
+        const sk = specOpt.仕込経費 ?? '';
+        const ka = specOpt.掛率 ?? '';
+        const calcResult = (specOpt.仕込経費 != null && specOpt.掛率 != null)
+          ? `<span class="calc-result">＝ ${fmtYen(specOpt.仕込経費 * specOpt.掛率)}</span>` : '';
+        const gme = specOpt.計算メモ ?? '';
+        breakdownRow = `<tr class="subrow"><td colspan="5">
+          <div class="breakdown-edit-row">
+            <span class="group">仕込
+              <input data-gopt="${i}.0.仕込経費" class="num inline-num" type="number" value="${sk}" placeholder="0">
+            </span>
+            × <span class="group">掛率
+              <input data-gopt="${i}.0.掛率" class="num inline-num" type="number" step="0.1" value="${ka}" placeholder="—">
+            </span>
+            ${calcResult}
+            <span class="group memo-group">メモ
+              <input data-gopt="${i}.0.計算メモ" class="inline-memo" value="${escapeHtml(gme)}" placeholder="自由入力">
+            </span>
+          </div>
+        </td></tr>`;
+      }
+      // 一覧画面では breakdownRow は出さない（仕込額は列で表示）
+
+      // 仕様行: ユニットに1つ（先頭optの仕様を参照, colspan=5）
+      let specRow = '';
+      if (isEditing) {
+        specRow = `<tr class="subrow spec-row"><td colspan="5"><div class="spec-content">
+            <span class="spec-label">仕様</span>
+            <span class="group">媒体 <input class="spec-mini-input" data-gopt="${i}.0.媒体" value="${escapeHtml(specOpt.媒体||'')}" placeholder="印刷物"></span>
+            <span class="group">仕上サイズ
+              <input class="spec-mini-input" data-gopt="${i}.0.サイズ" value="${escapeHtml(specOpt.サイズ||'')}" list="spec-size-${i}" placeholder="角2">
+              <datalist id="spec-size-${i}">
+                <option value="A4">
+                <option value="A3">
+                <option value="B5">
+                <option value="B4">
+                <option value="角2">
+                <option value="長3">
+              </datalist>
+            </span>
+            <span class="group">数量 <input class="spec-mini-input" data-gopt="${i}.0.数量" value="${escapeHtml(String(specOpt.数量??''))}" placeholder="100枚"></span>
+            <span class="group">用紙 <input class="spec-mini-input" data-gopt="${i}.0.用紙" value="${escapeHtml(specOpt.用紙||'')}" placeholder="白色封筒"></span>
+            <span class="group">厚さ <input class="spec-mini-input" data-gopt="${i}.0.厚さ" value="${escapeHtml(specOpt.厚さ||'')}" placeholder="80g"></span>
+            <span class="group">納期
+              <select class="spec-mini-select" data-gopt="${i}.0.納期">
+                <option value="">—</option>
+                <option value="最短" ${specOpt.納期==='最短'?'selected':''}>最短</option>
+                <option value="3営業日" ${specOpt.納期==='3営業日'?'selected':''}>3営業日</option>
+                <option value="4営業日" ${specOpt.納期==='4営業日'?'selected':''}>4営業日</option>
+                <option value="5営業日" ${specOpt.納期==='5営業日'?'selected':''}>5営業日</option>
+                <option value="6営業日" ${specOpt.納期==='6営業日'?'selected':''}>6営業日</option>
+                <option value="9営業日" ${specOpt.納期==='9営業日'?'selected':''}>9営業日</option>
+                <option value="10営業日" ${specOpt.納期==='10営業日'?'selected':''}>10営業日</option>
+                <option value="最長" ${specOpt.納期==='最長'?'selected':''}>最長</option>
+              </select>
+            </span>
+            <span class="group">加工 <input class="spec-mini-input" data-gopt="${i}.0.加工" value="${escapeHtml(specOpt.加工||'')}" placeholder="オンデマンド"></span>
+          </div></td></tr>`;
+      } else {
+        const parts = [];
+        if (specOpt.媒体)  parts.push(`<span><b>媒体</b> ${escapeHtml(specOpt.媒体)}</span>`);
+        if (specOpt.サイズ) parts.push(`<span><b>仕上サイズ</b> ${escapeHtml(specOpt.サイズ)}</span>`);
+        if (specOpt.数量)  parts.push(`<span><b>数量</b> ${escapeHtml(String(specOpt.数量))}</span>`);
+        if (specOpt.用紙)  parts.push(`<span><b>用紙</b> ${escapeHtml(specOpt.用紙)}</span>`);
+        if (specOpt.厚さ)  parts.push(`<span><b>厚さ</b> ${escapeHtml(specOpt.厚さ)}</span>`);
+        if (specOpt.納期)  parts.push(`<span><b>納期</b> ${escapeHtml(specOpt.納期)}</span>`);
+        if (specOpt.加工)  parts.push(`<span><b>加工</b> ${escapeHtml(specOpt.加工)}</span>`);
+        if (parts.length) {
+          specRow = `<tr class="subrow spec-row"><td colspan="5"><div class="spec-content">${parts.join('')}</div></td></tr>`;
+        }
+      }
+
+      // 相見積行（編集中のみ表示）
+      const aimitsuContent = !hasAimitsu ? '' : `
+        <div class="aimitsumori-import-panel" style="display:none;" data-aimitsu-import-panel="${i}">
+          <textarea data-aimitsu-json="${i}" placeholder='{"相見積もり結果":[{"会社":"プリントパック","仕込額":2980,"納期":"9営業日","適合":"○","備考":""},...]}'></textarea>
+          <button class="aimitsumori-import-btn" data-act-aimitsu="import-json" data-aimitsu-idx="${i}">取込</button>
+        </div>
+        <div class="aimitsumori-grid">
+          <div class="ai-row ai-header">
+            <span class="ai-co">会社</span>
+            <span class="ai-tk">適合</span>
+            <span class="ai-pr">仕込額（税込）</span>
+            <span class="ai-nt">備考</span>
+            <span class="ai-ad">採用</span>
+          </div>
+          ${aimitsuUnitRows.map((row, ridx) => {
+            const tekigoCls = {'○':'maru','△':'sankaku','×':'batsu'}[row.適合] || 'empty';
+            const tekigoLabel = row.適合 || '—';
+            return `<div class="ai-row${row.採用 ? ' ai-selected' : ''}">
+              <span class="ai-co">
+                <input data-aimitsu="${i}.${ridx}.会社" value="${escapeHtml(row.会社||'')}" placeholder="会社名">
+                ${(row.URL || aimitsuUrlMap[row.会社]) ? `<a class="ai-co-link" href="${escapeHtml(row.URL || aimitsuUrlMap[row.会社])}" target="_blank" rel="noopener" title="${escapeHtml(row.会社)}のサイト">↗</a>` : ''}
+                <button class="ai-remove-btn" data-aimitsu-remove="${i}.${ridx}" title="この行を削除">×</button>
+              </span>
+              <span class="ai-tk"><span class="tekigo-display ${tekigoCls}">${tekigoLabel}</span></span>
+              <span class="ai-pr"><input data-aimitsu="${i}.${ridx}.仕込額" type="text" inputmode="numeric" value="${row.仕込額??''}" placeholder="0" style="text-align:right;"></span>
+              <span class="ai-nt"><input data-aimitsu="${i}.${ridx}.備考" value="${escapeHtml(row.備考||'')}"></span>
+              <span class="ai-ad"><input type="checkbox" data-aimitsu-adopt="${i}.${ridx}" ${row.採用?'checked':''}></span>
+            </div>`;
+          }).join('')}
+          <div class="ai-add-row"><button class="ai-add-row-btn" data-act-aimitsu="add-row" data-aimitsu-idx="${i}">＋ 会社を追加</button></div>
+        </div>
+        <div class="aimitsumori-footer">
+          <button class="aimitsumori-apply-btn" data-act-aimitsu="apply" data-aimitsu-idx="${i}">外注に反映</button>
+          <span class="aimitsumori-toast" data-aimitsu-toast="${i}"></span>
+        </div>`;
+
+      const aimitsuRow = !isEditing ? '' : `<tr class="aimitsumori-unit-row">
+        <td colspan="5" style="padding:0;border-top:none !important;background:white !important;">
+          <div class="aimitsumori-section" data-aimitsu-unit="${i}">
+            <div class="aimitsumori-header">
+              <span class="aimitsumori-title">相見積</span>
+              ${hasAimitsu ? `
+                <span class="aimitsumori-spec-bar">
+                  ${aimitsuSpecParts.length
+                    ? aimitsuSpecParts.map(s => `<span>${escapeHtml(s)}</span>`).join('')
+                    : '<span class="spec-empty">仕様を入力すると自動表示</span>'}
+                </span>
+                <button class="aimitsumori-btn" data-act-aimitsu="copy-prompt" data-aimitsu-idx="${i}">Claude に依頼</button>
+                <button class="aimitsumori-btn" data-act-aimitsu="toggle-import" data-aimitsu-idx="${i}">JSON 取込</button>
+                <button class="aimitsumori-btn aimitsumori-btn--del" data-act-aimitsu="remove-aimitsu" data-aimitsu-idx="${i}">削除</button>
+              ` : `
+                <button class="aimitsumori-btn" data-act-aimitsu="add-aimitsu" data-aimitsu-idx="${i}">追加</button>
+              `}
+            </div>
+            ${aimitsuContent}
+          </div>
+        </td>
+      </tr>`;
+
+      const gaichuUnitAddRow = isEditing
+        ? `<tr class="add-unit-row"><td colspan="5"><div class="add-item-row">
+            <button class="add-meisai-btn" data-gaichu-insert="${i}">＋ 項目を追加</button>
+            <button class="add-meisai-btn dup-btn" data-gaichu-dup-at="${i}">＋ 項目を複製</button>
+          </div></td></tr>`
+        : '';
+      return `${optRows || `<tr><td colspan="6" style="padding:12px;text-align:center;color:var(--ink-3);font-style:italic;">明細未入力</td></tr>`}${breakdownRow}${specRow}${aimitsuRow}${gaichuUnitAddRow}`;
+    }).join('');
+
+    const gaichuRows = gaichuLen === 0 ? '' : gaichuAllRows;
+
+    const memoBlocks = (j.内訳_社内のみ || []).map((m, i) => {
+      const items = (m.items || []).map((it) => `
+        <tr>
+          <td>${fmtYen(it.制作費)}</td>
+          <td>${escapeHtml(it.仕入業者||'')}</td>
+          <td class="num">${it.部数 ?? ''}</td>
+          <td class="num">${fmtYen(it.単価)}</td>
+          <td class="num">${fmtYen(it.仕入価格)}</td>
+          <td class="num">${it.掛率 ?? ''}</td>
+          <td class="num">${fmtYen(it.売価)}</td>
+          <td class="num">${fmtYen(it.売単価)}</td>
+          <td class="num">${fmtYen(it.粗利)}</td>
+        </tr>
+      `).join('');
+      return `
+        <div class="memo-block">
+          <div class="memo-head">
+            <span class="label">■メモ${m.メモ番号 || (i+1)}</span>
+            ${m.備考 ? `<span class="memo-note">${escapeHtml(m.備考)}</span>` : ''}
+          </div>
+          <table>
+            <thead><tr>
+              <th>制作費</th><th>仕入業者</th><th>部数</th><th>単価</th>
+              <th>仕入価格</th><th>掛率</th><th>売価</th><th>売単価</th><th>粗利</th>
+            </tr></thead>
+            <tbody>${items}</tbody>
+          </table>
+          <div class="formula">※売価合計＝仕入価格×掛率＋制作費　／　売単価＝売価合計÷数量　／　粗利＝売価合計-仕入価格</div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="worksheet ${isEditing?'':'read-only'}" data-key="${jobKey(j)}">
+        <div class="ws-actions">
+          <span style="font-size:11px; color:var(--ink-3);">クリックで折りたたむ ↑</span>
+          <div class="actions-right">
+            ${isEditing
+              ? '<button class="btn danger" data-act="cancel">キャンセル</button><button class="btn primary" data-act="save">保存</button>'
+              : `<button class="btn" data-act="edit">編集</button><a class="btn" href="estimate.html?id=${jobOrig.制作番号 != null ? jobOrig.制作番号 : (jobOrig.TickTick_task_id || '')}" target="_blank">見積書</a><a class="btn" href="invoice.html?id=${jobOrig.制作番号 != null ? jobOrig.制作番号 : (jobOrig.TickTick_task_id || '')}" target="_blank">請求書</a>`}
+          </div>
+        </div>
+
+        <div class="worksheet-body">
+
+          <header class="ws-header">
+            <div class="ws-title">
+              <h2>WORKSHEET</h2>
+              <div class="co">WORKSHEET</div>
+            </div>
+            <div class="ws-dates">
+              <span class="lbl">依頼日／</span><input data-field="依頼日" value="${escapeHtml(j.依頼日||'')}" placeholder="2026-04-15">
+              <span class="lbl">見積日／</span><input data-field="見積日" value="${escapeHtml(j.見積日||'')}" placeholder="2026-04-15">
+              <span class="lbl">納品日／</span><input data-field="納品日" value="${escapeHtml(j.納品日||'')}" placeholder="2026-04-15">
+            </div>
+          </header>
+
+          <div class="ws-meta-bar">
+            <div class="field">
+              <span class="lbl">担当／</span>
+              <select data-field="担当">
+                ${['', ...STAFF].map(s => `<option ${j.担当===s?'selected':''} value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <span class="lbl">制作・請求番号／</span>
+              <span class="id-display">ID ${j.制作番号 != null ? j.制作番号 : '撮影'}</span>
+              ${j.種別==='撮影' ? '<span class="badge 撮影">撮影</span>' : ''}
+              ${j.外注フラグ ? '<span class="badge 外注">外注</span>' : ''}
+            </div>
+            <div class="field">
+              <span class="lbl">請求締日／</span>
+              <input data-field="請求締日" value="${escapeHtml(j.請求締日||'')}">
+            </div>
+            <div class="field">
+              <span class="lbl">請求月／</span>
+              <input data-field="請求月" value="${escapeHtml(j.請求月||'')}" placeholder="26.04">
+            </div>
+          </div>
+
+          <div class="ws-client-box">
+            <div class="row row-client">
+              <div class="cell"><span class="lbl">クライアント</span><input data-field="クライアント" value="${escapeHtml(j.クライアント||'')}"></div>
+              <div class="cell"><span class="lbl">担当者</span><input data-field="_dummy" value=""></div>
+            </div>
+            <div class="row row-product">
+              <div class="cell"><span class="lbl">製品名</span><input data-field="製品名" value="${escapeHtml(j.製品名||'')}"></div>
+              <div class="cell"><span class="lbl">媒体</span><input data-field="媒体" list="media-options" value="${escapeHtml(j.媒体||'')}" placeholder="例: WEB"></div>
+            </div>
+          </div>
+
+          <section class="ws-section">
+            <h3 class="section-title">社内</h3>
+            ${meisaiRows}
+            ${meisaiAddBtn}
+            ${bikoField}
+            <div class="grand-subtotal">
+              <span class="grand-subtotal-label">制作合計</span>
+              <span class="grand-subtotal-value">${fmtYen(meisaiSubtotal)}</span>
+              <span class="grand-subtotal-value">${fmtYen(meisaiTaxIncl)}</span>
+            </div>
+          </section>
+
+          <section class="ws-section">
+            <h3 class="section-title">外注</h3>
+            ${gaichuLen === 0
+              ? `<div style="padding:14px;text-align:center;color:var(--ink-3);font-style:italic;background:white;border:1px solid var(--line);">外注なし</div>`
+              : `<table class="ws-table">
+                  <thead><tr>
+                    ${isEditing
+                      ? `<th class="col-bunkin-del"></th>`
+                      : `<th class="col-bunkin">発注先</th>`}
+                    <th>外注作業概略</th>
+                    <th class="col-num">数量</th><th class="col-num">単価</th><th class="col-num">仕込額</th><th class="col-num">請求額</th>
+                  </tr></thead>
+                  <tbody>${gaichuRows}</tbody>
+                </table>`
+            }
+            ${isEditing && gaichuLen === 0 ? `<div class="add-item-row"><button class="add-meisai-btn" data-gaichu-add>＋ 項目を追加</button></div>` : ''}
+            ${isEditing
+              ? `<div class="meisai-biko-row"><input class="meisai-biko-input" data-field="外注備考" value="${escapeHtml(j.外注備考||'')}" placeholder="備考（自由記述）"></div>`
+              : (j.外注備考 ? `<div class="meisai-biko-row meisai-biko-view">${escapeHtml(j.外注備考)}</div>` : '')
+            }
+
+            <div class="grand-subtotal">
+              <span class="grand-subtotal-label">外注合計</span>
+              <span class="grand-subtotal-value">${fmtYen(gaichuBill)}</span>
+              <span class="grand-subtotal-value">${fmtYen(gaichuBillTax)}</span>
+            </div>
+          </section>
+
+          <div class="ws-totals">
+            <div class="cell profit-rate"><span class="lbl">粗利率</span><span class="val">${profitRate.toFixed(2)}%</span></div>
+            <div class="cell profit-amount"><span class="lbl">粗利益</span><span class="val">${fmtYen(profit)}</span></div>
+            <div class="cell gaichu-total"><span class="lbl">外注経費合計</span><span class="val">${fmtYen(gaichuCost)}</span></div>
+            <div class="cell bill-net"><span class="lbl">請求合計／税抜</span><span class="val">${fmtYen(billNet)}</span></div>
+            <div class="cell bill-gross"><span class="lbl">請求合計／税込</span><span class="val">${fmtYen(billGross)}</span></div>
+          </div>
+
+          <div class="ws-biko">
+            <span class="lbl">備考</span>
+            <textarea data-field="メモtext" placeholder="(備考なし)">${escapeHtml((j.メモ || []).map(m => typeof m === 'string' ? m : (m.text || m.内容 || '')).filter(Boolean).join('\n'))}</textarea>
+          </div>
+
+        </div>
+
+        ${memoBlocks ? `<div class="ws-memo-panel"><h3>MEMO（社内・内訳計算）</h3>${memoBlocks}</div>` : ''}
+
+        ${j.TickTick_title ? `
+          <div class="ticktick-info">
+            <span class="tt-title">TickTick: ${escapeHtml(j.TickTick_title)}</span>
+            <span class="tt-meta">${escapeHtml(j.TickTick_task_id || '')}</span>
+          </div>` : ''}
+
+      </div>
+    `;
+  }
+
+  // ====== QUICK PANEL イベント配線 ======
+  function wireQuickPanel(jobOrig) {
+    const k   = jobKey(jobOrig);
+    const qp  = document.querySelector(`.quick-panel[data-qp-key="${k}"]`);
+    if (!qp) return;
+
+    // タスク折りたたみトグル
+    const toggleEl = qp.querySelector(`[data-qp-toggle="${k}"]`);
+    const listEl   = document.getElementById(`qp-tasks-${k}`);
+    const chevEl   = document.getElementById(`qp-chev-${k}`);
+    if (toggleEl && listEl) {
+      toggleEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = listEl.style.display !== 'none';
+        listEl.style.display = open ? 'none' : '';
+        if (chevEl) chevEl.classList.toggle('open', !open);
+      });
+    }
+
+    // 備考テキストエリア — blur 時に 現在の状況 を自動保存
+    const memoEl = qp.querySelector(`[data-qp-memo="${k}"]`);
+    const savedEl = document.getElementById(`qp-saved-${k}`);
+    if (memoEl) {
+      memoEl.addEventListener('click', (e) => e.stopPropagation());
+      memoEl.addEventListener('blur', async () => {
+        if (!STATE.serverOnline) return;
+        const newVal = memoEl.value.trim();
+        const orig = jobOrig.現在の状況 || '';
+        if (newVal === orig) return;
+        if (savedEl) savedEl.textContent = '保存中…';
+        const updated = clone(jobOrig);
+        updated.現在の状況 = newVal;
+        updated.更新日 = new Date().toISOString().slice(0, 10);
+        try {
+          const res = await fetch('/api/job', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(updated)
+          });
+          if (res.ok) {
+            const saved = await res.json();
+            const idx = D.jobs.findIndex(j => jobKey(j) === k);
+            if (idx >= 0) D.jobs[idx] = saved;
+            if (savedEl) { savedEl.textContent = '保存済'; setTimeout(() => { if (savedEl) savedEl.textContent = ''; }, 2000); }
+          }
+        } catch(e) {
+          if (savedEl) savedEl.textContent = '';
+        }
+      });
+    }
+
+    // 詳細編集 / 閉じる ボタン
+    qp.querySelectorAll('[data-qp-act]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const act = btn.dataset.qpAct;
+        if (act === 'open-ws') {
+          if (!STATE.serverOnline) {
+            showToast('編集にはサーバ起動が必要です（python3 scripts/serve.py）', 'error');
+            return;
+          }
+          STATE.editingKey = k;
+          STATE.draft = clone(jobOrig);
+          renderJobs();
+        } else if (act === 'close-ws') {
+          STATE.editingKey = null;
+          STATE.draft = null;
+          renderJobs();
+        }
+      });
+    });
+  }
+
+  function wireWorksheet(jobOrig) {
+    const k = jobKey(jobOrig);
+    const wsEl = document.querySelector(`.worksheet[data-key="${k}"]`);
+    if (!wsEl) return;
+
+    // Action buttons
+    wsEl.querySelectorAll('[data-act]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const act = btn.dataset.act;
+        if (act === 'edit') {
+          if (!STATE.serverOnline) {
+            showToast('編集にはサーバ起動が必要です（python3 scripts/serve.py）', 'error');
+            return;
+          }
+          STATE.editingKey = k;
+          STATE.draft = clone(jobOrig);
+          renderJobs();
+        } else if (act === 'cancel') {
+          if (STATE.isNewJob) {
+            D.jobs = D.jobs.filter(j => jobKey(j) !== STATE.editingKey);
+            STATE.isNewJob = false;
+          }
+          STATE.editingKey = null;
+          STATE.draft = null;
+          renderJobs();
+        } else if (act === 'save') {
+          handleSave(jobOrig);
+        }
+      });
+    });
+
+    // Don't propagate clicks inside worksheet to summary
+    wsEl.addEventListener('click', (e) => e.stopPropagation());
+
+    // 共通: 即トグル＆即保存ハンドラ作成
+    const makeInstantToggleHandler = (cb, kind, indices) => async () => {
+      const editing = STATE.editingKey === k;
+      const applyToggle = (target) => {
+        if (kind === 'meisai') {
+          const [mIdx, oIdx] = indices;
+          target.明細[mIdx].選択肢[oIdx].選択 = cb.checked;
+        } else if (kind === 'gaichu') {
+          const [gIdx, oIdx] = indices;
+          target.外注[gIdx].選択肢[oIdx].選択 = cb.checked;
+        }
+      };
+      if (editing) { applyToggle(STATE.draft); renderJobs(); return; }
+      if (!STATE.serverOnline) {
+        showToast('サーバ未起動のため保存できません', 'error');
+        cb.checked = !cb.checked;
+        return;
+      }
+      const updated = clone(jobOrig);
+      applyToggle(updated);
+      try {
+        const r = await fetch('/api/save', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(updated),
+        });
+        const jr = await r.json();
+        if (!jr.ok) throw new Error(jr.error || 'failed');
+        const newScript = await fetch('data.js?_=' + Date.now()).then(r => r.text());
+        const fn = new Function(newScript + '; return window.IDEARNEST;');
+        window.IDEARNEST = fn();
+        Object.assign(D, window.IDEARNEST);
+        renderStats();
+        renderPills();
+        renderJobs();
+        const sel = kind === 'meisai'
+          ? updated.明細[indices[0]].選択肢[indices[1]]
+          : updated.外注[indices[0]].選択肢[indices[1]];
+        const verb = cb.checked ? '採用に追加' : '採用から外し';
+        showToast('「' + (sel.内容 || '') + '」を' + verb + '・保存しました');
+      } catch (e) {
+        showToast('保存失敗: ' + e.message, 'error');
+        cb.checked = !cb.checked;
+      }
+    };
+
+    // 社内・採用チェックボックス
+    wsEl.querySelectorAll('[data-meisai-select]').forEach(cb => {
+      const indices = cb.dataset.meisaiSelect.split('.').map(Number);
+      cb.addEventListener('change', makeInstantToggleHandler(cb, 'meisai', indices));
+    });
+    // 外注・採用チェックボックス
+    wsEl.querySelectorAll('[data-gaichu-select]').forEach(cb => {
+      const indices = cb.dataset.gaichuSelect.split('.').map(Number);
+      cb.addEventListener('change', makeInstantToggleHandler(cb, 'gaichu', indices));
+    });
+
+    // Live update fields if editing
+    if (STATE.editingKey === k) {
+      wsEl.querySelectorAll('[data-field]').forEach(el => {
+        el.addEventListener('input', () => {
+          const fk = el.dataset.field;
+          if (fk.startsWith('_')) return;
+          let v = el.type === 'checkbox' ? el.checked : el.value;
+          if (fk === 'メモtext') {
+            STATE.draft.メモ = v.split('\n').filter(s => s.trim());
+            return;
+          }
+          if (fk === '数量' && v !== '') v = Number(v);
+          else if (v === '') v = null;
+          STATE.draft[fk] = v;
+        });
+        // 媒体変更で外注の仕様欄レイアウトを再描画
+        el.addEventListener('change', () => {
+          if (el.dataset.field === '媒体') renderJobs();
+        });
+      });
+      wsEl.querySelectorAll('[data-meisai]').forEach(el => {
+        el.addEventListener('input', () => {
+          const path = el.dataset.meisai.split('.');
+          const idx = parseInt(path[0]);
+          if (!STATE.draft.明細[idx]) return;
+          let v = el.value;
+          if (el.classList.contains('num') && v !== '') v = Number(v);
+          else if (v === '') v = null;
+          if (path.length === 2) {
+            STATE.draft.明細[idx][path[1]] = v;
+          } else if (path.length === 3) {
+            STATE.draft.明細[idx][path[1]] = STATE.draft.明細[idx][path[1]] || {};
+            STATE.draft.明細[idx][path[1]][path[2]] = v;
+          }
+          // 仕込 × 掛率 → 金額（請求額）→ 単価 の自動計算
+          if (path.length === 3 && path[1] === '内訳_社内' && (path[2] === '仕込み経費' || path[2] === '掛率')) {
+            const bd = STATE.draft.明細[idx].内訳_社内 || {};
+            const sk = bd.仕込み経費, ka = bd.掛率;
+            if (sk != null && ka != null) {
+              const kin = Math.round(sk * ka);
+              // 選択中の選択肢に金額・単価を自動入力
+              (STATE.draft.明細[idx].選択肢 || []).forEach((opt, k) => {
+                if (!opt.選択) return;
+                opt.金額 = kin;
+                if (opt.数量) opt.単価 = Math.round(kin / opt.数量 * 10) / 10;
+                // DOMに直接反映（フォーカスを奪わない）
+                const kinEl = wsEl.querySelector(`[data-opt="${idx}.${k}.金額"]`);
+                if (kinEl) kinEl.value = kin;
+                if (opt.数量) {
+                  const tanEl = wsEl.querySelector(`[data-opt="${idx}.${k}.単価"]`);
+                  if (tanEl) tanEl.value = opt.単価;
+                }
+              });
+              // calc-resultも更新
+              const calcEl = el.closest('.breakdown-edit-row')?.querySelector('.calc-result');
+              if (calcEl) calcEl.textContent = `＝ ${fmtYen(kin)}`;
+              scheduleAutoCalcRender(); // 合計欄を遅延再描画
+            }
+          }
+        });
+      });
+      // 選択肢の各セル input
+      wsEl.querySelectorAll('[data-opt]').forEach(el => {
+        el.addEventListener('input', () => {
+          const path = el.dataset.opt.split('.');
+          const mIdx = parseInt(path[0]);
+          const oIdx = parseInt(path[1]);
+          const field = path[2];
+          if (!STATE.draft.明細[mIdx]?.選択肢?.[oIdx]) return;
+          let v = el.value;
+          if (el.classList.contains('num') && v !== '') v = Number(v);
+          else if (v === '') v = null;
+          const opt = STATE.draft.明細[mIdx].選択肢[oIdx];
+          opt[field] = v;
+          // 数量 or 金額が変わったとき → 単価 = 金額 ÷ 数量 を自動計算
+          if (field === '数量' || field === '金額') {
+            const bd = STATE.draft.明細[mIdx].内訳_社内 || {};
+            // 仕込が入っているとき: 数量が変わったら金額を再計算してから単価を出す
+            if (field === '数量' && bd.仕込み経費 != null && bd.掛率 != null) {
+              opt.金額 = Math.round(bd.仕込み経費 * bd.掛率);
+              const kinEl = wsEl.querySelector(`[data-opt="${mIdx}.${oIdx}.金額"]`);
+              if (kinEl) kinEl.value = opt.金額;
+            }
+            if (opt.金額 != null && opt.数量 != null && opt.数量 !== 0) {
+              opt.単価 = Math.round(opt.金額 / opt.数量 * 10) / 10;
+              const tanEl = wsEl.querySelector(`[data-opt="${mIdx}.${oIdx}.単価"]`);
+              if (tanEl) tanEl.value = opt.単価;
+              scheduleAutoCalcRender();
+            }
+          }
+        });
+      });
+      // 選択肢の追加・削除
+      wsEl.querySelectorAll('[data-opt-add]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const mIdx = parseInt(btn.dataset.optAdd);
+          STATE.draft.明細[mIdx].選択肢 = STATE.draft.明細[mIdx].選択肢 || [];
+          STATE.draft.明細[mIdx].選択肢.push({内容:'', 数量:null, 単価:null, 金額:0, 選択:false, 備考:''});
+          renderJobs();
+        });
+      });
+      wsEl.querySelectorAll('[data-opt-remove]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const [mIdx, oIdx] = btn.dataset.optRemove.split('.').map(Number);
+          STATE.draft.明細[mIdx].選択肢.splice(oIdx, 1);
+          renderJobs();
+        });
+      });
+      // ユニット削除
+      wsEl.querySelectorAll('[data-meisai-delete]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.meisaiDelete);
+          STATE.draft.明細.splice(idx, 1);
+          renderJobs();
+        });
+      });
+      // 項目（明細グループ）の追加
+      wsEl.querySelectorAll('[data-meisai-add]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          STATE.draft.明細 = STATE.draft.明細 || [];
+          STATE.draft.明細.push({
+            区分: '',
+            税率: 10,
+            備考: '',
+            内訳_社内: { 仕込み経費: null, 掛率: null, 計算メモ: '' },
+            選択肢: [{ 内容: '', 数量: null, 単価: null, 金額: 0, 選択: true, 備考: '' }]
+          });
+          renderJobs();
+        });
+      });
+      // ブロック間「+ 項目を追加」（指定位置に挿入）
+      wsEl.querySelectorAll('[data-meisai-insert]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          STATE.draft.明細 = STATE.draft.明細 || [];
+          const afterIdx = parseInt(btn.dataset.meisaiInsert);
+          STATE.draft.明細.splice(afterIdx + 1, 0, {
+            区分: '',
+            税率: 10,
+            備考: '',
+            内訳_社内: { 仕込み経費: null, 掛率: null, 計算メモ: '' },
+            選択肢: [{ 内容: '', 数量: null, 単価: null, 金額: 0, 選択: true, 備考: '' }]
+          });
+          renderJobs();
+        });
+      });
+      wsEl.querySelectorAll('[data-gaichu]').forEach(el => {
+        el.addEventListener('input', () => {
+          const path = el.dataset.gaichu.split('.');
+          const idx = parseInt(path[0]);
+          if (!STATE.draft.外注[idx]) return;
+          let v = el.value;
+          if (el.classList.contains('num') && v !== '') v = Number(v);
+          else if (v === '') v = null;
+          STATE.draft.外注[idx][path[1]] = v;
+        });
+      });
+      // 外注選択肢の各セル input
+      wsEl.querySelectorAll('[data-gopt]').forEach(el => {
+        el.addEventListener('input', () => {
+          const path = el.dataset.gopt.split('.');
+          const gIdx = parseInt(path[0]);
+          const oIdx = parseInt(path[1]);
+          const field = path[2];
+          if (!STATE.draft.外注[gIdx]?.選択肢?.[oIdx]) return;
+          let v = el.value;
+          if (v === '') {
+            v = null;
+          } else if (el.classList.contains('num')) {
+            const n = Number(v);
+            v = isNaN(n) ? v : n; // NaN なら文字列のまま保持（例: "100枚"）
+          }
+          const opt = STATE.draft.外注[gIdx].選択肢[oIdx];
+          opt[field] = v;
+          // 仕込経費 × 掛率 = 請求額 を自動反映（請求額の手動変更も可）
+          if (field === '仕込経費' || field === '掛率') {
+            if (opt.仕込経費 != null && opt.掛率 != null) {
+              opt.請求額 = Math.round(opt.仕込経費 * opt.掛率);
+              const reqInput = wsEl.querySelector(`[data-gopt="${gIdx}.${oIdx}.請求額"]`);
+              if (reqInput) reqInput.value = opt.請求額;
+            }
+          }
+          // 請求額 ÷ 数量 = 単価 を自動反映（数量は "100枚" 等の文字列も考慮）
+          if (field === '請求額' || field === '数量') {
+            const kin = opt.請求額;
+            const qty = parseFloat(String(opt.数量 ?? '').replace(/[^\d.]/g, ''));
+            if (kin != null && qty && qty !== 0) {
+              opt.単価 = Math.round(kin / qty * 10) / 10;
+              const tanEl = wsEl.querySelector(`[data-gopt="${gIdx}.${oIdx}.単価"]`);
+              if (tanEl) tanEl.value = opt.単価;
+            }
+          }
+        });
+        // blur時に合計を再計算
+        el.addEventListener('change', () => {
+          const field = el.dataset.gopt.split('.')[2];
+          if (['仕込経費','掛率','請求額','数量'].includes(field)) renderJobs();
+        });
+      });
+      // 外注ユニット削除
+      wsEl.querySelectorAll('[data-gaichu-delete]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.gaichuDelete);
+          STATE.draft.外注.splice(idx, 1);
+          renderJobs();
+        });
+      });
+      // 外注ユニット追加
+      // 明細: ユニット複製（指定インデックスの直後に挿入）
+      wsEl.querySelectorAll('[data-meisai-dup-at]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.meisaiDupAt);
+          const src = JSON.parse(JSON.stringify(STATE.draft.明細[idx]));
+          STATE.draft.明細.splice(idx + 1, 0, src);
+          renderJobs();
+        });
+      });
+
+      wsEl.querySelectorAll('[data-gaichu-add]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          STATE.draft.外注 = STATE.draft.外注 || [];
+          STATE.draft.外注.push({
+            発注先: '', 発注日: null, 備考: '',
+            選択肢: [{
+              内容: '', 仕込経費: null, 掛率: 2, 請求額: null,
+              選択: true, 備考: '',
+              媒体: '', サイズ: '', 数量: '', 用紙: '', 厚さ: '', 加工: '', 納期: ''
+            }]
+          });
+          renderJobs();
+        });
+      });
+
+      // 外注: ユニット新規挿入（指定インデックスの直後に挿入）
+      wsEl.querySelectorAll('[data-gaichu-insert]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.gaichuInsert);
+          STATE.draft.外注 = STATE.draft.外注 || [];
+          STATE.draft.外注.splice(idx + 1, 0, {
+            発注先: '', 発注日: null, 備考: '',
+            選択肢: [{ 内容: '', 仕込経費: null, 掛率: 2, 請求額: null, 選択: true, 備考: '', 媒体: '', サイズ: '', 数量: '', 用紙: '', 厚さ: '', 加工: '', 納期: '' }]
+          });
+          renderJobs();
+        });
+      });
+      // 外注: ユニット複製（指定インデックスの直後に挿入）
+      wsEl.querySelectorAll('[data-gaichu-dup-at]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.gaichuDupAt);
+          const src = JSON.parse(JSON.stringify(STATE.draft.外注[idx]));
+          STATE.draft.外注.splice(idx + 1, 0, src);
+          renderJobs();
+        });
+      });
+      // 外注選択肢の削除（複数選択肢が残る場合のみ）
+      wsEl.querySelectorAll('[data-gopt-remove]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const [gIdx, oIdx] = btn.dataset.goptRemove.split('.').map(Number);
+          STATE.draft.外注[gIdx].選択肢.splice(oIdx, 1);
+          renderJobs();
+        });
+      });
+
+      // ===== 相見積セクション（外注ユニット単位） =====
+
+      // 外注ユニット i の相見積データを確保するヘルパー
+      function ensureAimitsuUnit(unitIdx) {
+        const unit = STATE.draft.外注?.[unitIdx];
+        if (!unit) return [];
+        if (!unit.相見積もり) unit.相見積もり = [];
+        return unit.相見積もり;
+      }
+
+      // 各セル入力（data-aimitsu="unitIdx.rowIdx.field"）
+      wsEl.querySelectorAll('[data-aimitsu]').forEach(el => {
+        el.addEventListener('input', () => {
+          const [uIdx, rIdx, field] = el.dataset.aimitsu.split('.');
+          const rows = ensureAimitsuUnit(parseInt(uIdx));
+          let v = el.value;
+          if (field === '仕込額') v = v === '' ? null : Number(v);
+          if (rows[parseInt(rIdx)]) rows[parseInt(rIdx)][field] = v;
+        });
+      });
+
+      // 採用チェックボックス（ラジオ動作: ユニット内で1社のみ）
+      // data-aimitsu-adopt="unitIdx.rowIdx"
+      wsEl.querySelectorAll('[data-aimitsu-adopt]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const [uIdx, rIdx] = cb.dataset.aimitsuAdopt.split('.').map(Number);
+          const rows = ensureAimitsuUnit(uIdx);
+          rows.forEach((r, i) => { r.採用 = (i === rIdx && cb.checked); });
+          // 採用会社を発注先に自動セット＆仕込額を外注に即反映
+          const unit = STATE.draft.外注[uIdx];
+          if (unit) {
+            const adopted = cb.checked ? rows[rIdx] : null;
+            unit.発注先 = adopted ? adopted.会社 : (rows.find(r => r.採用)?.会社 || '');
+            const opt = unit.選択肢?.[0];
+            if (opt && adopted && adopted.仕込額 != null) {
+              opt.仕込経費 = adopted.仕込額;
+              // 掛率があれば 仕込 × 掛率 = 請求額、なければ仕込額をそのまま請求
+              opt.請求額 = (opt.掛率 != null)
+                ? Math.round(adopted.仕込額 * opt.掛率)
+                : adopted.仕込額;
+              const qty = parseFloat(String(opt.数量 ?? '').replace(/[^\d.]/g, ''));
+              if (qty) opt.単価 = Math.round(opt.請求額 / qty * 10) / 10;
+            }
+          }
+          // 同ユニット内の他チェックを外す
+          const section = cb.closest('[data-aimitsu-unit]');
+          if (section) {
+            section.querySelectorAll('[data-aimitsu-adopt]').forEach((c, i) => {
+              c.checked = (i === rIdx && cb.checked);
+            });
+            section.querySelectorAll('.aimitsumori-grid .ai-row:not(.ai-header)').forEach((tr, i) => {
+              tr.classList.toggle('ai-selected', i === rIdx && cb.checked);
+            });
+          }
+          renderJobsKeepFocus();
+        });
+      });
+
+      // JSON 取込パネルのトグル（ユニットごと）
+      wsEl.querySelectorAll('[data-act-aimitsu="toggle-import"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = btn.dataset.aimitsuIdx;
+          const panel = wsEl.querySelector(`[data-aimitsu-import-panel="${idx}"]`);
+          if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+        });
+      });
+
+      // JSON 取込実行（ユニットごと）
+      wsEl.querySelectorAll('[data-act-aimitsu="import-json"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uIdx = parseInt(btn.dataset.aimitsuIdx);
+          const ta = wsEl.querySelector(`[data-aimitsu-json="${uIdx}"]`);
+          if (!ta) return;
+          try {
+            const parsed = JSON.parse(ta.value.trim());
+            const results = parsed['相見積もり結果'] || parsed['results'] || (Array.isArray(parsed) ? parsed : null);
+            if (!results) throw new Error('相見積もり結果 キーが見つかりません');
+            const rows = ensureAimitsuUnit(uIdx);
+            results.forEach(r => {
+              if (!r.会社) return;
+              let target = rows.find(row => row.会社 === r.会社);
+              if (!target) {
+                // グリッドにない会社は新規行として追加
+                target = { 会社: r.会社, 適合: '', 仕込額: null, 備考: '', 採用: false };
+                rows.push(target);
+              }
+              if (r.仕込額 !== undefined) target.仕込額 = r.仕込額;
+              if (r.適合 !== undefined) target.適合 = r.適合;
+              if (r.納期 !== undefined) target.納期 = r.納期;
+              if (r.備考 !== undefined) target.備考 = r.備考;
+              if (r.URL)               target.URL   = r.URL;
+            });
+            ta.value = '';
+            renderJobs();
+            const toast = wsEl.querySelector(`[data-aimitsu-toast="${uIdx}"]`);
+            if (toast) { toast.textContent = '取込完了'; setTimeout(() => { toast.textContent = ''; }, 3000); }
+          } catch(e) {
+            alert('JSON の解析に失敗しました: ' + e.message);
+          }
+        });
+      });
+
+      // Claude に依頼: 仕様入り依頼文をクリップボードにコピー（ユニットごと）
+      wsEl.querySelectorAll('[data-act-aimitsu="copy-prompt"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uIdx = parseInt(btn.dataset.aimitsuIdx);
+          const j = STATE.draft || jobOrig;
+          const spec = j.外注?.[uIdx]?.選択肢?.[0] || {};
+          const specLines = [
+            spec.サイズ && `  サイズ: ${spec.サイズ}`,
+            spec.数量  && `  数量:   ${spec.数量}`,
+            spec.加工  && `  加工:   ${spec.加工}`,
+            spec.用紙  && `  用紙:   ${spec.用紙}`,
+          ].filter(Boolean).join('\n');
+          // グリッドにある会社リストを動的に取得（なければ AIMITSU_COS をデフォルト）
+          const unitRows = j.外注?.[uIdx]?.相見積もり;
+          const coList = (unitRows && unitRows.length > 0)
+            ? unitRows.map(r => r.会社).filter(Boolean)
+            : [...AIMITSU_COS];
+          const coListLine = coList.join('・');
+          const cat = detectPrintCategory(spec, j.製品名);
+          const urlMap = AIMITSU_URL_TABLE[cat] || AIMITSU_URL_TABLE['デフォルト'];
+          const jsonTemplate = coList.map(c => {
+            const url = urlMap[c] || '';
+            return `  {"会社":"${c}","適合":"○△×のいずれか","仕込額":null,"URL":"${url}","備考":""}`;
+          }).join(',\n');
+          const prompt =
+`【相見積もり依頼】— IDEARNEST WORKSHEET より
+
+■ 案件: ${j.製品名 || ''}（${j.クライアント || ''}）
+■ 仕様:
+${specLines || '  （外注仕様欄を記入してください）'}
+
+上記仕様で ${coListLine} の相見積もりをお願いします。
+仕様に合わない会社は適合を「×」としてください。
+上記以外にも安く印刷できそうな会社があれば追加してもらって構いません。
+
+収集後、結果を以下の JSON 形式で出力してください:
+{"相見積もり結果":[
+${jsonTemplate}
+]}`;
+          navigator.clipboard.writeText(prompt).then(() => {
+            btn.textContent = 'コピー済み';
+            setTimeout(() => { btn.textContent = 'Claude に依頼'; }, 3000);
+            const toast = wsEl.querySelector(`[data-aimitsu-toast="${uIdx}"]`);
+            if (toast) { toast.textContent = 'クリップボードにコピーしました'; setTimeout(() => { toast.textContent = ''; }, 3000); }
+          });
+        });
+      });
+
+      // 外注に反映: 採用チェック会社の仕込額を同ユニットの外注選択肢に書き込む
+      wsEl.querySelectorAll('[data-act-aimitsu="apply"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uIdx = parseInt(btn.dataset.aimitsuIdx);
+          const rows = ensureAimitsuUnit(uIdx);
+          const adopted = rows.find(r => r.採用);
+          if (!adopted) { alert('採用する会社にチェックを入れてください。'); return; }
+          const unit = STATE.draft.外注?.[uIdx];
+          const opt = unit?.選択肢?.[0];
+          if (!opt) { alert('外注の選択肢がありません。'); return; }
+          opt.仕込経費 = adopted.仕込額;
+          opt.請求額 = (opt.掛率 != null)
+            ? Math.round(adopted.仕込額 * opt.掛率)
+            : adopted.仕込額;
+          const qty = parseFloat(String(opt.数量 ?? '').replace(/[^\d.]/g, ''));
+          if (adopted.仕込額 != null && qty) opt.単価 = Math.round(opt.請求額 / qty * 10) / 10;
+          // 採用会社を発注先に設定（空の場合のみ）
+          if (!unit.発注先) unit.発注先 = adopted.会社;
+          const toast = wsEl.querySelector(`[data-aimitsu-toast="${uIdx}"]`);
+          if (toast) { toast.textContent = `${adopted.会社} を反映しました`; setTimeout(() => { toast.textContent = ''; }, 4000); }
+          renderJobs();
+        });
+      });
+
+      // 相見積行削除（data-aimitsu-remove="unitIdx.rowIdx"）
+      wsEl.querySelectorAll('[data-aimitsu-remove]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const [uIdx, rIdx] = btn.dataset.aimitsuRemove.split('.').map(Number);
+          const unit = STATE.draft.外注?.[uIdx];
+          if (unit && unit.相見積もり) {
+            unit.相見積もり.splice(rIdx, 1);
+            renderJobsKeepFocus();
+          }
+        });
+      });
+
+      // 相見積行追加（data-act-aimitsu="add-row"）
+      wsEl.querySelectorAll('[data-act-aimitsu="add-row"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uIdx = parseInt(btn.dataset.aimitsuIdx);
+          const unit = STATE.draft.外注?.[uIdx];
+          if (unit) {
+            if (!unit.相見積もり) unit.相見積もり = [];
+            unit.相見積もり.push({ 会社: '', 適合: '', 仕込額: null, 備考: '', 採用: false });
+            renderJobsKeepFocus();
+          }
+        });
+      });
+
+      // 相見積セクションを追加（タイトル横「追加」ボタン）
+      wsEl.querySelectorAll('[data-act-aimitsu="add-aimitsu"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uIdx = parseInt(btn.dataset.aimitsuIdx);
+          const unit = STATE.draft.外注?.[uIdx];
+          if (unit) {
+            // 印刷物は5社プリセット、その他は空行1つ
+            unit.相見積もり = STATE.draft.媒体 === '印刷物'
+              ? AIMITSU_COS.map(c => ({ 会社: c, 適合: '', 仕込額: null, 備考: '', 採用: false }))
+              : [{ 会社: '', 適合: '', 仕込額: null, 備考: '', 採用: false }];
+            renderJobsKeepFocus();
+          }
+        });
+      });
+
+      // 相見積セクションを削除（タイトル横「削除」ボタン）
+      wsEl.querySelectorAll('[data-act-aimitsu="remove-aimitsu"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uIdx = parseInt(btn.dataset.aimitsuIdx);
+          const unit = STATE.draft.外注?.[uIdx];
+          if (unit) {
+            unit.相見積もり = null;
+            renderJobsKeepFocus();
+          }
+        });
+      });
+    }
+  }
+
+  async function handleSave(jobOrig) {
+    try {
+      const r = await fetch('/api/save', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(STATE.draft),
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || 'failed');
+
+      // Reload data.js
+      const newScript = await fetch('data.js?_=' + Date.now()).then(r => r.text());
+      const fn = new Function(newScript + '; return window.IDEARNEST;');
+      window.IDEARNEST = fn();
+      Object.assign(D, window.IDEARNEST);
+
+      STATE.editingKey = null;
+      STATE.draft = null;
+      STATE.isNewJob = false;
+      renderStats();
+      renderPills();
+      renderJobs();
+      showToast('保存しました');
+    } catch (e) {
+      showToast('保存失敗: ' + e.message, 'error');
+    }
+  }
+
+  // ====== EVENTS ======
+  $('#search').addEventListener('input', (e) => { STATE.search = e.target.value.trim(); renderJobs(); });
+  document.getElementById('btn-adv').addEventListener('click', () => {
+    STATE.showAdvanced = !STATE.showAdvanced;
+    const panel = document.getElementById('adv-panel');
+    panel.style.display = STATE.showAdvanced ? 'block' : 'none';
+    if (STATE.showAdvanced) renderAdvPanel();
+    updateAdvBtn();
+  });
+
+  // 新規 WORKSHEET 作成
+  document.getElementById('btn-new-job').addEventListener('click', () => {
+    if (!STATE.serverOnline) {
+      showToast('サーバ未起動のため作成できません', 'error');
+      return;
+    }
+    // 既存の最大 制作番号 + 1
+    const maxId = Math.max(0, ...D.jobs.filter(j => j.制作番号 != null).map(j => j.制作番号));
+    const nextId = maxId + 1;
+    const today = new Date().toISOString().split('T')[0];
+    const newJob = {
+      制作番号: nextId,
+      クライアント: '',
+      末端クライアント: null,
+      製品名: '',
+      媒体: '',
+      敬称: '御中',
+      状態: '見積',
+      種別: '通常',
+      外注フラグ: false,
+      依頼日: null,
+      見積日: today,
+      入稿予定日: null,
+      納品予定日: null,
+      納品日: null,
+      請求月: null,
+      請求締日: '月末',
+      担当: '',
+      サイズ: '',
+      数量: null,
+      色数: '',
+      加工: '',
+      用紙: '',
+      明細: [],
+      外注: [],
+      現在の状況: '',
+      メモ: [],
+      相見積もり: [],
+      内訳_社内のみ: [],
+      TickTick_task_id: '',
+      TickTick_title: '',
+      作成日: today,
+      更新日: today,
+    };
+    D.jobs.unshift(newJob);
+    STATE.isNewJob = true;
+    STATE.editingKey = jobKey(newJob);
+    STATE.draft = clone(newJob);
+    renderJobs();
+    // リストの先頭にスクロール
+    const jobsList = document.getElementById('jobs-list');
+    if (jobsList) jobsList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // ====== CLIENTS ======
+  function renderClients() {
+    const root = document.getElementById('client-list-root');
+    if (!root) return;
+    const clients = (D.clients || []).slice().sort((a, b) =>
+      (a.社名ふりがな || a.社名 || '').localeCompare(b.社名ふりがな || b.社名 || '', 'ja'));
+    const jobs = D.jobs || [];
+
+    if (clients.length === 0) {
+      root.innerHTML = '<div class="empty">クライアントデータがありません</div>';
+      return;
+    }
+
+    const fmtYenC = n => n ? '¥' + Number(n).toLocaleString('ja-JP') : '';
+
+    root.innerHTML = `<div class="client-list">${clients.map(c => {
+      const cJobs = jobs
+        .filter(j => j.クライアント === c.id || j.クライアント === c.社名)
+        .sort((a, b) => (b.制作番号 || 0) - (a.制作番号 || 0));
+      const latest = cJobs[0];
+      const tanto = (c.担当者 || [])[0] || {};
+
+      const latestHtml = latest ? `
+        <div class="job-line">
+          <span class="badge ${escapeHtml(latest.状態 || '')}">${escapeHtml(latest.状態 || '')}</span>
+          <span class="job-name">${escapeHtml(latest.製品名 || '')}</span>
+          <span class="job-amount">${fmtYenC(sumMeisaiTaxIncl(latest) + sumGaichuBillTax(latest))}</span>
+        </div>` : '<span class="no-job">案件なし</span>';
+
+      return `<div class="client-card" data-cid="${escapeHtml(c.id || c.社名)}">
+        <div class="client-summary-row">
+          <div>
+            <div class="client-name">${escapeHtml(c.社名 || '')}</div>
+            <div class="client-kana">${escapeHtml(c.社名ふりがな || '')}</div>
+          </div>
+          <div>
+            <div class="client-contact">${escapeHtml(tanto.名前 || '—')}</div>
+            <div class="client-email">${escapeHtml(tanto.メール || c.メール1 || '—')}</div>
+          </div>
+          <div class="client-latest">${latestHtml}</div>
+          <div class="client-chevron">▼</div>
+        </div>
+        <div class="client-detail" style="display:none">
+          <div class="client-detail-section">
+            <div>
+              <div class="client-detail-label">住所</div>
+              <div class="client-detail-value">${c.郵便番号 ? '〒' + escapeHtml(c.郵便番号) + '<br>' : ''}${escapeHtml(c.住所 || '—')}</div>
+            </div>
+            <div>
+              <div class="client-detail-label">連絡先</div>
+              <div class="client-detail-value">
+                ${c.電話  ? 'Tel: ' + escapeHtml(c.電話) + '<br>' : ''}
+                ${c.メール1 ? escapeHtml(c.メール1) : ''}
+              </div>
+            </div>
+            ${c.メモ ? `<div><div class="client-detail-label">メモ</div><div class="client-detail-value">${escapeHtml(c.メモ)}</div></div>` : ''}
+          </div>
+          <div class="client-detail-section">
+            <div>
+              <div class="client-detail-label">定期請求</div>
+              <div class="client-detail-value">
+                ${(c.定期請求 || []).length === 0
+                  ? '<span style="color:var(--ink-4)">未設定</span>'
+                  : (c.定期請求 || []).map(r => `
+                    <div style="padding:6px 0; border-bottom:1px solid var(--line);">
+                      <span style="font-weight:600">${escapeHtml(r.品目テンプレ || '')}</span><br>
+                      ${escapeHtml(r.周期 || '')}・発生月：${(r.発生月 || []).join('・')}月
+                      ／ ${r.金額 ? '¥' + Number(r.金額).toLocaleString('ja-JP') : ''}（税抜）
+                    </div>`).join('')
+                }
+              </div>
+            </div>
+            <div>
+              <div class="client-detail-label">案件一覧（${cJobs.length}件）</div>
+              <div class="client-jobs-mini">
+                ${cJobs.length === 0 ? '<span style="color:var(--ink-4)">なし</span>' :
+                  cJobs.map(j => `<a href="index.html?client=${encodeURIComponent(j.クライアント)}">
+                    <span class="job-no">#${j.制作番号 || '—'}</span>
+                    <span>${escapeHtml(j.製品名 || '')}</span>
+                    <span class="badge ${escapeHtml(j.状態 || '')}" style="font-size:10px">${escapeHtml(j.状態 || '')}</span>
+                    <span class="job-amount-mini">${fmtYenC(sumMeisaiTaxIncl(j) + sumGaichuBillTax(j))}</span>
+                  </a>`).join('')}
+              </div>
+            </div>
+            ${(function(){
+              const cMinutes = getMinutesByClient(c.id || c.社名);
+              return `<div>
+                <div class="client-detail-label">
+                  議事録履歴（${cMinutes.length}件）
+                  <button type="button" class="btn-jump-minutes" data-client="${escapeHtml(c.id || c.社名)}" style="margin-left:10px; padding:2px 10px; border:1px solid var(--line); border-radius:3px; background:var(--card-bg); cursor:pointer; font-size:11px;">議事録タブで見る</button>
+                </div>
+                <div class="client-minutes-mini" style="display:flex; flex-direction:column; gap:4px;">
+                  ${cMinutes.length === 0 ? '<span style="color:var(--ink-4); font-size:12px;">なし</span>' :
+                    cMinutes.slice(0, 5).map(m => `<a href="#" class="client-minute-link" data-mid="${escapeHtml(m.id)}" style="display:flex; gap:10px; align-items:center; font-size:12px; padding:4px 8px; border-radius:3px; text-decoration:none; color:var(--ink); background:var(--bg);">
+                      ${sourceBadge(m.source_type, m.source_meta)}
+                      <span style="color:var(--ink-3); font-variant-numeric:tabular-nums;">${escapeHtml(m.date)} ${escapeHtml(m.time || '')}</span>
+                      <span style="font-weight:600;">${escapeHtml(m.title || '(無題)')}</span>
+                      ${m.job_no ? `<span style="color:var(--ink-3); margin-left:auto;">#${escapeHtml(m.job_no)}</span>` : ''}
+                    </a>`).join('') +
+                    (cMinutes.length > 5 ? `<span style="font-size:11px; color:var(--ink-3); padding:2px 8px;">他${cMinutes.length-5}件</span>` : '')
+                  }
+                </div>
+              </div>`;
+            })()}
+          </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+
+    // 議事録ジャンプ・直接モーダルオープン
+    root.querySelectorAll('.client-minute-link').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openMinuteDetail(a.dataset.mid);
+      });
+    });
+    root.querySelectorAll('.btn-jump-minutes').forEach(b => {
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const targetClient = b.dataset.client;
+        document.querySelector('.main-tab[data-tab="minutes"]').click();
+        const sel = $('#minutes-filter-client');
+        if (sel) {
+          if (![...sel.options].some(o => o.value === targetClient)) {
+            const opt = document.createElement('option');
+            opt.value = targetClient; opt.textContent = targetClient;
+            sel.appendChild(opt);
+          }
+          sel.value = targetClient;
+          sel.dispatchEvent(new Event('change'));
+        }
+      });
+    });
+
+    // toggle expand
+    root.querySelectorAll('.client-summary-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const card = row.closest('.client-card');
+        const detail = card.querySelector('.client-detail');
+        const isOpen = detail.style.display !== 'none';
+        detail.style.display = isOpen ? 'none' : 'block';
+        card.classList.toggle('expanded', !isOpen);
+      });
+    });
+  }
+
+  // ====== TABS ======
+  document.querySelectorAll('.main-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.main-tab').forEach(b => b.classList.toggle('active', b === btn));
+      document.getElementById('tab-jobs').style.display    = tab === 'jobs'    ? 'block' : 'none';
+      document.getElementById('tab-clients').style.display = tab === 'clients' ? 'block' : 'none';
+      document.getElementById('tab-minutes').style.display = tab === 'minutes' ? 'block' : 'none';
+      if (tab === 'clients') renderClients();
+      if (tab === 'minutes') renderMinutes();
+    });
+  });
+
+  // ====== MINUTES ======
+  // ソース種別のテキストラベル（絵文字は装飾NG / 林氏ルール）
+  const SOURCE_LABEL = {
+    audio:            '録音',        // legacyキー（sourceInfoで上書き）
+    email:            'メール',
+    line:             'LINE',
+    phone:            '電話（録音なし）',
+    phone_recorded:   '電話（録音）',
+    meeting:          '打ち合わせ（録音なし）',
+    meeting_recorded: '打ち合わせ（録音）',
+    manual:           '手入力',
+  };
+  const SOURCE_COLOR = {
+    line:             { bg: '#d4f0d4', fg: '#1a6b1a' },
+    email:            { bg: '#d4e6ff', fg: '#1a3a7a' },
+    phone:            { bg: '#fde8cc', fg: '#7a3a00' },
+    phone_recorded:   { bg: '#ead5f5', fg: '#5a007a' },
+    meeting:          { bg: '#e8e8e8', fg: '#444'    },
+    meeting_recorded: { bg: '#d5c5f5', fg: '#3a006a' },
+    audio:            { bg: '#ead5f5', fg: '#5a007a' }, // fallback
+    manual:           { bg: '#f0f0f0', fg: '#666'    },
+  };
+  // source_typeとsource_metaから表示用ラベルとカラーキーを返す
+  function sourceInfo(src, meta) {
+    if (src === 'audio') {
+      const fn = ((meta || {}).audio_filename) || '';
+      const isPhone = /通話|voicemail|voice/i.test(fn);
+      return isPhone
+        ? { label: '電話（録音）',      key: 'phone_recorded'   }
+        : { label: '打ち合わせ（録音）', key: 'meeting_recorded' };
+    }
+    return { label: SOURCE_LABEL[src] || src || '?', key: src };
+  }
+  function sourceBadge(src, meta) {
+    const info = sourceInfo(src, meta);
+    const c = SOURCE_COLOR[info.key] || { bg: '#eee', fg: '#555' };
+    return `<span style="display:inline-block; min-width:36px; padding:1px 6px; font-size:10px; font-weight:700; text-align:center; background:${c.bg}; color:${c.fg}; border-radius:3px; white-space:nowrap;">${escapeHtml(info.label)}</span>`;
+  }
+
+  function getMinutes() {
+    return D.minutes || [];
+  }
+  function getMinutesByJob(jobNo) {
+    if (!jobNo) return [];
+    const norm = s => String(s || '').replace(/^#/, '').trim();
+    return getMinutes().filter(m => norm(m.job_no) === norm(jobNo));
+  }
+  function getMinutesByClient(clientId) {
+    if (!clientId) return [];
+    return getMinutes().filter(m => (m.client_id || '') === clientId);
+  }
+
+  function renderMinutes() {
+    const list = $('#minutes-list');
+    const summary = $('#minutes-summary');
+    const minutes = getMinutes();
+
+    // クライアントフィルタの選択肢を再構築
+    const filterClient = $('#minutes-filter-client');
+    const currentVal = filterClient.value;
+    const usedClients = [...new Set(minutes.map(m => m.client_id).filter(Boolean))].sort();
+    filterClient.innerHTML = '<option value="">クライアント：全て</option>' +
+      usedClients.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    filterClient.value = currentVal;
+
+    const q = ($('#minutes-search').value || '').trim().toLowerCase();
+    const fc = filterClient.value;
+    const fs = $('#minutes-filter-source').value;
+
+    const filtered = minutes.filter(m => {
+      if (fc && m.client_id !== fc) return false;
+      if (fs && m.source_type !== fs) return false;
+      if (q) {
+        const blob = [
+          m.title, m.summary, m.client_id, m.job_no,
+          ...(m.tags || []),
+          ...(m.decisions || []).map(x => x.text),
+          ...(m.new_requests || []).map(x => x.text),
+          ...(m.modifications || []).map(x => x.text),
+        ].filter(Boolean).join(' ').toLowerCase();
+        if (!blob.includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      list.innerHTML = '<div style="text-align:center; color:var(--ink-3); padding:60px 20px; background:var(--card-bg); border:1px dashed var(--line); border-radius:6px;">議事録なし<br><span style="font-size:11px;">右上の「＋ 議事録追加」から追加できます</span></div>';
+      summary.textContent = '';
+      return;
+    }
+
+    list.innerHTML = filtered.map(m => {
+      const counts = [];
+      const dCount = (m.decisions || []).length;
+      const nCount = (m.new_requests || []).length;
+      const mCount = (m.modifications || []).length;
+      const sCount = (m.schedules || []).length;
+      const aCount = (m.next_actions || []).length;
+      counts.push(`<span class="${dCount?'has':''}">決定 ${dCount}</span>`);
+      counts.push(`<span class="${nCount?'has':''}">新規 ${nCount}</span>`);
+      counts.push(`<span class="${mCount?'has':''}">修正 ${mCount}</span>`);
+      counts.push(`<span class="${sCount?'has':''}">予定 ${sCount}</span>`);
+      counts.push(`<span class="${aCount?'has':''}">アクション ${aCount}</span>`);
+      const isApplied = !!(m.applied && m.applied.applied_at);
+      if (isApplied) counts.push('<span class="applied">反映済</span>');
+
+      const jobNoDisp = m.job_no ? `#${escapeHtml(m.job_no)}` : 'NEW';
+      const jobClass = m.job_no ? '' : 'is-new';
+
+      const isProcessing = (m.status === 'processing_transcribe' || m.status === 'processing_digest');
+      const isError = (m.status === 'error');
+      const statusBanner = isProcessing
+        ? `<div style="font-size:11px; color:var(--color-coral); padding:4px 8px; background:#fff7e0; border-radius:3px; margin-bottom:6px;">処理中：${escapeHtml(m.status_message || '')}</div>`
+        : (isError ? `<div style="font-size:11px; color:var(--danger); padding:4px 8px; background:#fdf0e6; border-radius:3px; margin-bottom:6px;">エラー：${escapeHtml(m.status_message || '')}</div>` : '');
+
+      return `<div class="minute-card" data-mid="${escapeHtml(m.id)}">
+        <div class="minute-card-head">
+          ${sourceBadge(m.source_type, m.source_meta)}
+          <span class="minute-datetime">${escapeHtml(m.date || '')} ${escapeHtml(m.time || '')}</span>
+          <span class="minute-client">${escapeHtml(m.client_id || '?')}</span>
+          <span class="minute-job-no ${jobClass}">${jobNoDisp}</span>
+        </div>
+        ${statusBanner}
+        <div class="minute-card-title">${escapeHtml(m.title || '(無題)')}</div>
+        <div class="minute-card-summary">${escapeHtml((m.summary || '').slice(0, 200))}</div>
+        <div class="minute-card-counts">${counts.join('')}</div>
+      </div>`;
+    }).join('');
+
+    summary.textContent = `${filtered.length} / ${minutes.length} 件`;
+
+    // クリックイベント
+    list.querySelectorAll('.minute-card').forEach(card => {
+      card.addEventListener('click', () => openMinuteDetail(card.dataset.mid));
+    });
+  }
+
+  // 検索・フィルタのイベント
+  ['minutes-search', 'minutes-filter-client', 'minutes-filter-source'].forEach(id => {
+    document.getElementById(id).addEventListener('input', renderMinutes);
+    document.getElementById(id).addEventListener('change', renderMinutes);
+  });
+
+  // ====== MINUTE MODAL ======
+  function closeMinuteModal() {
+    $('#minute-modal').classList.remove('show');
+  }
+  $('#minute-modal-close').addEventListener('click', closeMinuteModal);
+  $('#minute-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'minute-modal') closeMinuteModal();
+  });
+
+  $('#btn-add-minute').addEventListener('click', () => openMinuteAdd());
+
+  function openMinuteAdd() {
+    const modal = $('#minute-modal');
+    $('#minute-modal-title').textContent = '＋ 議事録追加';
+
+    const today = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const time = `${hh}:${mm}`;
+
+    const clients = (D.clients || []).map(c => c.id || c.社名).filter(Boolean);
+    const clientOpts = ['<option value="">（未選択）</option>',
+      ...clients.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`)].join('');
+
+    const activeJobs = (D.jobs || [])
+      .filter(j => j.状態 !== '完了' && j.状態 !== '中止' && j.制作番号)
+      .sort((a, b) => (b.制作番号 || 0) - (a.制作番号 || 0));
+    const jobOpts = ['<option value="">（新規 / 未確定）</option>',
+      ...activeJobs.map(j => `<option value="${j.制作番号}">#${j.制作番号} ${escapeHtml(j.クライアント || '')} / ${escapeHtml(j.製品名 || '')}</option>`)].join('');
+
+    $('#minute-modal-body').innerHTML = `
+      <div class="source-picker" id="source-picker">
+        <button type="button" class="source-btn active" data-src="audio">
+          <span><span class="label">録音ファイル</span><span class="desc">m4a/mp3/wav等をドロップ → 文字起こし→議事録化</span></span>
+        </button>
+        <button type="button" class="source-btn" data-src="manual">
+          <span><span class="label">直接入力</span><span class="desc">タイトル・本文を手で書く</span></span>
+        </button>
+        <button type="button" class="source-btn" data-src="email">
+          <span><span class="label">メール本文を貼り付け</span><span class="desc">AIが議事録化</span></span>
+        </button>
+        <button type="button" class="source-btn" data-src="line">
+          <span><span class="label">LINE/チャットを貼り付け</span><span class="desc">AIが議事録化</span></span>
+        </button>
+        <button type="button" class="source-btn" data-src="phone">
+          <span><span class="label">電話メモから議事録化</span><span class="desc">メモを書いてAIが整理</span></span>
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>日付</label>
+        <input type="date" id="m-date" value="${today}">
+        <input type="time" id="m-time" value="${time}" style="max-width:120px;">
+      </div>
+      <div class="form-row">
+        <label>クライアント</label>
+        <select id="m-client">${clientOpts}</select>
+      </div>
+      <div class="form-row">
+        <label>関連案件</label>
+        <select id="m-job">${jobOpts}</select>
+      </div>
+
+      <!-- 直接入力モード用 -->
+      <div id="manual-fields">
+        <div class="form-row">
+          <label>タイトル</label>
+          <input type="text" id="m-title" placeholder="例：発送遅延の連絡">
+        </div>
+        <div class="form-row" style="align-items:flex-start;">
+          <label>議事録本文</label>
+          <textarea id="m-note" placeholder="決定事項・次のアクション・スケジュール等を自由に記述"></textarea>
+        </div>
+      </div>
+
+      <!-- AI処理モード用 -->
+      <div id="ai-fields" style="display:none;">
+        <div class="form-row" id="email-from-row" style="display:none;">
+          <label>送信者</label>
+          <input type="text" id="m-email-from" placeholder="例：山田様（◯◯商店）">
+        </div>
+        <div class="form-row" id="email-subject-row" style="display:none;">
+          <label>件名</label>
+          <input type="text" id="m-email-subject" placeholder="メール件名">
+        </div>
+        <div class="form-row" style="align-items:flex-start;">
+          <label id="ai-input-label">本文</label>
+          <textarea id="m-raw" placeholder="メール本文 / チャットログ / 電話メモを貼り付け"></textarea>
+        </div>
+        <div style="font-size:11px; color:var(--ink-3); padding-left:100px; margin-top:-4px;">
+          AIが決定事項・新規依頼・修正・スケジュール・次のアクションに自動分類します
+        </div>
+      </div>
+
+      <!-- 音声モード用 -->
+      <div id="audio-fields">
+        <div id="audio-dropzone" style="border:2px dashed var(--line-2); border-radius:8px; padding:32px 20px; text-align:center; cursor:pointer; background:var(--bg); transition:all 0.15s;">
+          <div style="font-size:14px; font-weight:600; color:var(--ink); margin-bottom:6px;">録音ファイルをここにドロップ</div>
+          <div style="font-size:12px; color:var(--ink-3); margin-bottom:12px;">m4a / mp3 / wav / ogg / mp4 等ほぼ全フォーマット対応</div>
+          <button type="button" id="m-audio-pick" style="padding:7px 18px; border:1px solid var(--line); border-radius:4px; background:var(--card-bg); cursor:pointer; font-family:inherit; font-size:12px;">ファイルを選択...</button>
+          <input type="file" id="m-audio-file" accept="audio/*,video/mp4,video/quicktime,.m4a,.mp3,.wav,.ogg,.flac" style="display:none;">
+          <div id="audio-selected-info" style="margin-top:12px; font-size:12px; color:var(--ink-2); display:none;"></div>
+        </div>
+        <div style="font-size:11px; color:var(--ink-3); margin-top:10px; line-height:1.6;">
+          アップロード後、文字起こし（ローカル whisper.cpp）→ AI議事録化が自動で走ります。<br>
+          処理時間目安：5分音声で約8〜10分／30分音声で約50分。バックグラウンド実行されるので、画面を閉じてもOK。
+        </div>
+      </div>
+    `;
+
+    $('#minute-modal-foot').innerHTML = `
+      <button class="modal-btn" id="m-cancel">キャンセル</button>
+      <button class="modal-btn primary" id="m-submit">保存</button>
+    `;
+
+    let currentSource = 'audio';
+    let selectedAudioFile = null;
+
+    function applySourceMode(src) {
+      currentSource = src;
+      $('#source-picker').querySelectorAll('.source-btn').forEach(b => b.classList.toggle('active', b.dataset.src === src));
+      $('#manual-fields').style.display = src === 'manual' ? 'block' : 'none';
+      $('#ai-fields').style.display = (src === 'email' || src === 'line' || src === 'phone') ? 'block' : 'none';
+      $('#audio-fields').style.display = src === 'audio' ? 'block' : 'none';
+      $('#email-from-row').style.display = src === 'email' ? 'flex' : 'none';
+      $('#email-subject-row').style.display = src === 'email' ? 'flex' : 'none';
+      const labels = { email: 'メール本文', line: 'チャットログ', phone: '電話メモ' };
+      $('#ai-input-label').textContent = labels[src] || '本文';
+    }
+    applySourceMode('audio');
+
+    $('#source-picker').querySelectorAll('.source-btn').forEach(btn => {
+      btn.addEventListener('click', () => applySourceMode(btn.dataset.src));
+    });
+
+    // 音声ドロップゾーン
+    const dz = $('#audio-dropzone');
+    const fileInput = $('#m-audio-file');
+    function showSelectedAudio(f) {
+      selectedAudioFile = f;
+      const info = $('#audio-selected-info');
+      info.style.display = 'block';
+      const sizeMB = (f.size / 1024 / 1024).toFixed(1);
+      info.innerHTML = `<strong>${escapeHtml(f.name)}</strong> （${sizeMB} MB）`;
+    }
+    $('#m-audio-pick').addEventListener('click', (e) => { e.preventDefault(); fileInput.click(); });
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) showSelectedAudio(e.target.files[0]);
+    });
+    ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, (e) => {
+      e.preventDefault(); e.stopPropagation();
+      dz.style.borderColor = 'var(--color-primary)';
+      dz.style.background = 'var(--color-secondary)';
+    }));
+    ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, (e) => {
+      e.preventDefault(); e.stopPropagation();
+      dz.style.borderColor = 'var(--line-2)';
+      dz.style.background = 'var(--bg)';
+    }));
+    dz.addEventListener('drop', (e) => {
+      const f = e.dataTransfer.files[0];
+      if (f) showSelectedAudio(f);
+    });
+
+    $('#m-cancel').addEventListener('click', closeMinuteModal);
+    $('#m-submit').addEventListener('click', () => submitMinuteAdd(currentSource, selectedAudioFile));
+
+    modal.classList.add('show');
+  }
+
+  async function submitMinuteAdd(sourceType, audioFile) {
+    const date = $('#m-date').value;
+    const time = $('#m-time').value;
+    const client = $('#m-client').value || null;
+    const job = $('#m-job').value || null;
+
+    const submitBtn = $('#m-submit');
+    submitBtn.disabled = true;
+    const origText = submitBtn.textContent;
+
+    try {
+      if (sourceType === 'audio') {
+        if (!audioFile) { alert('録音ファイルを選択またはドロップしてください'); submitBtn.disabled = false; return; }
+        if (!client) { alert('クライアントを選択してください'); submitBtn.disabled = false; return; }
+        submitBtn.textContent = 'アップロード中...';
+        const fd = new FormData();
+        fd.append('audio', audioFile, audioFile.name);
+        fd.append('client_hint', client);
+        if (job) fd.append('job_hint', job);
+        fd.append('date', date);
+        fd.append('time', time);
+        const r = await fetch('/api/minutes/upload-audio', { method: 'POST', body: fd });
+        const j = await r.json();
+        if (!j.ok) throw new Error(j.error || 'upload failed');
+        showToast('アップロード完了。バックグラウンドで文字起こし→議事録化中...');
+        const newScript = await fetch('data.js?_=' + Date.now()).then(r => r.text());
+        eval(newScript);
+        closeMinuteModal();
+        renderMinutes();
+        startMinuteStatusPolling(j.minute_id);
+        return;
+      }
+      if (sourceType === 'manual') {
+        const title = $('#m-title').value.trim();
+        const note = $('#m-note').value;
+        if (!title) { alert('タイトルを入力してください'); submitBtn.disabled = false; return; }
+        if (!client) { alert('クライアントを選択してください'); submitBtn.disabled = false; return; }
+        submitBtn.textContent = '保存中...';
+        const record = {
+          id: `${date.replace(/-/g,'')}_${time.replace(':','')}_${job || 'NEW'}`,
+          date, time, title,
+          client_id: client,
+          job_no: job ? String(job) : null,
+          source_type: 'manual',
+          source_meta: {},
+          raw_input: note,
+          summary: note.slice(0, 200),
+          decisions: [], new_requests: [], modifications: [], schedules: [], next_actions: [],
+          tags: [],
+          applied: { ticktick_task_ids: [], worksheet_updates: [], applied_at: null, applied_by: null },
+        };
+        const r = await fetch('/api/minutes/save', {
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          body: JSON.stringify(record),
+        });
+        const j = await r.json();
+        if (!j.ok) throw new Error(j.error || 'save failed');
+        showToast('議事録を保存しました');
+      } else {
+        const text = $('#m-raw').value.trim();
+        if (!text) { alert('本文を入力してください'); submitBtn.disabled = false; return; }
+        submitBtn.textContent = 'AI議事録化中...（10〜20秒）';
+        const body = {
+          text, date, time,
+          source_type: sourceType,
+          client_hint: client,
+          job_hint: job,
+          source_meta: sourceType === 'email' ? {
+            from: $('#m-email-from').value,
+            subject: $('#m-email-subject').value,
+          } : {},
+        };
+        const r = await fetch('/api/minutes/create', {
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          body: JSON.stringify(body),
+        });
+        const j = await r.json();
+        if (!j.ok) throw new Error(j.error || 'create failed');
+        showToast('議事録を作成しました');
+      }
+      // データ再読込
+      const newScript = await fetch('data.js?_=' + Date.now()).then(r => r.text());
+      eval(newScript);
+      closeMinuteModal();
+      renderMinutes();
+    } catch (e) {
+      alert('エラー: ' + e.message);
+      submitBtn.disabled = false;
+      submitBtn.textContent = origText;
+    }
+  }
+
+  async function openMinuteDetail(mid) {
+    const modal = $('#minute-modal');
+    $('#minute-modal-title').textContent = '読み込み中...';
+    $('#minute-modal-body').innerHTML = '<div style="padding:40px; text-align:center; color:var(--ink-3);">読み込み中...</div>';
+    $('#minute-modal-foot').innerHTML = '';
+    modal.classList.add('show');
+
+    let rec;
+    try {
+      const r = await fetch(`/api/minutes/get?id=${encodeURIComponent(mid)}`);
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error);
+      rec = j.minute;
+    } catch (e) {
+      // サーバオフライン時は data.js から（transcript無し）
+      rec = (D.minutes || []).find(m => m.id === mid);
+      if (!rec) {
+        $('#minute-modal-body').innerHTML = `<div style="padding:40px; color:var(--danger);">読み込み失敗: ${escapeHtml(e.message)}</div>`;
+        return;
+      }
+    }
+
+    const { label: sourceLabel } = sourceInfo(rec.source_type, rec.source_meta);
+    const isApplied = !!(rec.applied && rec.applied.applied_at);
+
+    $('#minute-modal-title').innerHTML = `${escapeHtml(rec.title || '(無題)')}`;
+
+    const renderSection = (label, items, formatter) => {
+      const empty = !items || items.length === 0;
+      return `<div class="digest-section${empty?' empty':''}">
+        <h4>${label} <span class="count">${items?.length || 0}件</span></h4>
+        <ul>${empty ? '<li>—</li>' : items.map(formatter).join('')}</ul>
+      </div>`;
+    };
+
+    const meta = `
+      <div style="font-size:12px; color:var(--ink-3); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; align-items:center;">
+        <span>${escapeHtml(rec.date)} ${escapeHtml(rec.time || '')}</span>
+        <span>クライアント: ${escapeHtml(rec.client_id || '?')}</span>
+        <span>案件: ${rec.job_no ? '#'+escapeHtml(rec.job_no) : '新規/未確定'}</span>
+        <span>ソース: ${sourceBadge(rec.source_type, rec.source_meta)}</span>
+      </div>
+    `;
+
+    const appliedBanner = isApplied
+      ? `<div class="applied-banner">${escapeHtml(rec.applied.applied_at)} に反映済み${rec.applied.note ? '（' + escapeHtml(rec.applied.note) + '）' : ''}</div>`
+      : '';
+
+    const summary = rec.summary
+      ? `<div style="font-size:13px; line-height:1.7; padding:12px 14px; background:var(--color-cream); border-radius:4px; margin-bottom:16px;">${escapeHtml(rec.summary)}</div>`
+      : '';
+
+    const tagsHtml = (rec.tags && rec.tags.length)
+      ? `<div style="margin-bottom:14px;">${rec.tags.map(t => `<span style="display:inline-block; background:var(--color-secondary); color:var(--ink-2); font-size:11px; padding:2px 10px; border-radius:10px; margin-right:6px;">${escapeHtml(t)}</span>`).join('')}</div>`
+      : '';
+
+    const sections = [
+      renderSection('決定事項', rec.decisions, d => `<li>${escapeHtml(d.text || '')}</li>`),
+      renderSection('新規依頼', rec.new_requests, r => `<li>${escapeHtml(r.text || '')}${r.estimated_scope ? `<span class="meta">範囲: ${escapeHtml(r.estimated_scope)}</span>`:''}</li>`),
+      renderSection('修正・追加', rec.modifications, m => `<li>${escapeHtml(m.text || '')}<span class="meta">${m.target_job_no ? '案件 #'+escapeHtml(m.target_job_no) : ''}${m.deadline ? ' / 期日: '+escapeHtml(m.deadline) : ''}</span></li>`),
+      renderSection('スケジュール', rec.schedules, s => `<li>${escapeHtml(s.text || '')}<span class="meta">${escapeHtml(s.datetime || '')} (${escapeHtml(s.type || '')})</span></li>`),
+      renderSection('次のアクション', rec.next_actions, a => `<li>${escapeHtml(a.text || '')}<span class="meta">担当: ${escapeHtml(a.owner || '-')}${a.deadline ? ' / 期日: '+escapeHtml(a.deadline) : ''}</span></li>`),
+    ].join('');
+
+    const transcriptHtml = rec.transcript
+      ? `<details style="margin-top:18px;"><summary style="cursor:pointer; font-size:12px; color:var(--ink-3); padding:6px 0;">▼ 元テキスト / 文字起こし全文を表示</summary>
+         <pre style="white-space:pre-wrap; font-size:12px; line-height:1.6; padding:12px; background:var(--bg); border-radius:4px; margin-top:8px; max-height:300px; overflow-y:auto;">${escapeHtml(rec.transcript)}</pre></details>`
+      : (rec.raw_input ? `<details style="margin-top:18px;"><summary style="cursor:pointer; font-size:12px; color:var(--ink-3); padding:6px 0;">▼ 元入力テキストを表示</summary>
+         <pre style="white-space:pre-wrap; font-size:12px; line-height:1.6; padding:12px; background:var(--bg); border-radius:4px; margin-top:8px; max-height:300px; overflow-y:auto;">${escapeHtml(rec.raw_input)}</pre></details>` : '');
+
+    $('#minute-modal-body').innerHTML = meta + appliedBanner + summary + tagsHtml + sections + transcriptHtml;
+
+    $('#minute-modal-foot').innerHTML = `
+      <button class="modal-btn danger" id="m-delete">削除</button>
+      <button class="modal-btn" id="m-close-detail">閉じる</button>
+      ${isApplied ? '' : `<button class="modal-btn primary" id="m-apply">TickTick / WORKSHEET に反映</button>`}
+    `;
+
+    $('#m-close-detail').addEventListener('click', closeMinuteModal);
+    $('#m-delete').addEventListener('click', async () => {
+      if (!confirm(`議事録「${rec.title}」を削除しますか？`)) return;
+      const r = await fetch('/api/minutes/delete', {
+        method: 'POST', headers: {'content-type': 'application/json'},
+        body: JSON.stringify({id: rec.id}),
+      });
+      const j = await r.json();
+      if (!j.ok) { alert('削除失敗: ' + j.error); return; }
+      const newScript = await fetch('data.js?_=' + Date.now()).then(r => r.text());
+      eval(newScript);
+      closeMinuteModal();
+      renderMinutes();
+    });
+    const applyBtn = $('#m-apply');
+    if (applyBtn) {
+      applyBtn.addEventListener('click', () => openApplyPreview(rec.id));
+    }
+  }
+
+  // ====== STATUS POLLING (音声処理) ======
+  const _polling = new Map(); // mid -> intervalId
+
+  function startMinuteStatusPolling(mid) {
+    if (_polling.has(mid)) return;
+    const t = setInterval(async () => {
+      try {
+        const r = await fetch(`/api/minutes/get?id=${encodeURIComponent(mid)}`);
+        const j = await r.json();
+        if (!j.ok) return;
+        const m = j.minute;
+        // data.js の minutes 配列を更新（簡易）
+        const arr = D.minutes || (D.minutes = []);
+        const idx = arr.findIndex(x => x.id === mid);
+        const slim = Object.assign({}, m);
+        delete slim.transcript; delete slim.raw_input;
+        if (idx >= 0) arr[idx] = slim; else arr.unshift(slim);
+        renderMinutes();
+        renderJobs();
+        if (m.status === 'ready') {
+          clearInterval(t);
+          _polling.delete(mid);
+          showToast(`議事録化完了：${m.title || '(無題)'}`);
+        } else if (m.status === 'error') {
+          clearInterval(t);
+          _polling.delete(mid);
+          showToast('議事録化失敗（詳細は議事録モーダルで）', 'danger');
+        }
+      } catch (e) { /* ignore network errors during polling */ }
+    }, 5000);
+    _polling.set(mid, t);
+  }
+
+  // 起動時：処理中の議事録があればポーリング再開
+  function resumePollingForInProgress() {
+    (D.minutes || []).forEach(m => {
+      if (m.status === 'processing_transcribe' || m.status === 'processing_digest') {
+        startMinuteStatusPolling(m.id);
+      }
+    });
+  }
+
+  // ====== APPLY PREVIEW MODAL ======
+  async function openApplyPreview(mid) {
+    $('#minute-modal-title').innerHTML = '反映プレビュー';
+    $('#minute-modal-body').innerHTML = '<div style="padding:40px; text-align:center; color:var(--ink-3);">プラン作成中...</div>';
+    $('#minute-modal-foot').innerHTML = '';
+
+    let preview;
+    try {
+      const r = await fetch('/api/minutes/preview-apply', {
+        method: 'POST', headers: {'content-type': 'application/json'},
+        body: JSON.stringify({id: mid}),
+      });
+      preview = await r.json();
+      if (!preview.ok) throw new Error(preview.error);
+    } catch (e) {
+      $('#minute-modal-body').innerHTML = `<div style="padding:40px; color:var(--danger);">プレビュー失敗: ${escapeHtml(e.message)}</div>`;
+      $('#minute-modal-foot').innerHTML = `<button class="modal-btn" id="m-back">戻る</button>`;
+      $('#m-back').addEventListener('click', () => openMinuteDetail(mid));
+      return;
+    }
+
+    const plans = preview.plans || [];
+    const KIND_LABEL = {
+      'modification_to_existing': '修正：既存案件のチェック項目に追加',
+      'create_new_job': '新規：WORKSHEETに案件として登録',
+      'schedule_to_existing': '予定：既存案件のチェック項目に追加',
+      'schedule_as_task': '予定：TickTickリマインダー作成',
+      'next_action_to_existing': 'アクション：既存案件のチェック項目に追加',
+      'next_action_as_task': 'アクション：TickTickタスクとして追加',
+      'skip_client_action': '記録のみ（クライアント側）',
+    };
+
+    if (plans.length === 0) {
+      $('#minute-modal-body').innerHTML = `
+        <div style="padding:30px; text-align:center; color:var(--ink-3);">
+          反映するプランがありません<br>
+          <span style="font-size:11px;">この議事録には新規依頼・修正・スケジュール・次のアクションが含まれていません</span>
+        </div>`;
+      $('#minute-modal-foot').innerHTML = `<button class="modal-btn" id="m-back">戻る</button>`;
+      $('#m-back').addEventListener('click', () => openMinuteDetail(mid));
+      return;
+    }
+
+    $('#minute-modal-body').innerHTML = `
+      <div style="font-size:12px; color:var(--ink-2); margin-bottom:12px; padding:8px 12px; background:var(--color-cream); border-radius:4px;">
+        以下の項目から、反映する操作を選んで「実行」を押してください。<br>
+        実行されると TickTick / WORKSHEET が変更されます。
+      </div>
+      <div id="apply-plans" style="display:flex; flex-direction:column; gap:8px;">
+        ${plans.map((p, i) => {
+          const exec = p.executable !== false;
+          return `<label class="apply-plan-row" style="display:flex; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:4px; cursor:${exec?'pointer':'not-allowed'}; ${exec?'':'opacity:0.5;'} background:var(--card-bg);">
+            <input type="checkbox" data-plan-idx="${i}" ${exec ? 'checked' : 'disabled'} style="margin-top:3px;">
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:12px; color:var(--ink-3); margin-bottom:2px;">${KIND_LABEL[p.kind] || p.kind}</div>
+              <div style="font-size:13px; font-weight:600; color:var(--ink); margin-bottom:2px;">${escapeHtml(p.label || '')}</div>
+              <div style="font-size:12px; color:var(--ink-2);">${escapeHtml(p.detail || '')}</div>
+              ${p.reason_if_not ? `<div style="font-size:11px; color:var(--danger); margin-top:4px;">${escapeHtml(p.reason_if_not)}</div>` : ''}
+            </div>
+          </label>`;
+        }).join('')}
+      </div>
+    `;
+
+    $('#minute-modal-foot').innerHTML = `
+      <button class="modal-btn" id="m-back-detail">戻る</button>
+      <button class="modal-btn" id="m-toggle-all">全選択/解除</button>
+      <button class="modal-btn primary" id="m-execute">選択項目を実行</button>
+    `;
+
+    $('#m-back-detail').addEventListener('click', () => openMinuteDetail(mid));
+
+    $('#m-toggle-all').addEventListener('click', () => {
+      const cbs = document.querySelectorAll('#apply-plans input[type="checkbox"]:not(:disabled)');
+      const allChecked = [...cbs].every(c => c.checked);
+      cbs.forEach(c => c.checked = !allChecked);
+    });
+
+    $('#m-execute').addEventListener('click', async () => {
+      const cbs = document.querySelectorAll('#apply-plans input[type="checkbox"]:checked');
+      const indices = [...cbs].map(c => parseInt(c.dataset.planIdx, 10));
+      if (indices.length === 0) {
+        alert('実行する項目を選択してください');
+        return;
+      }
+      if (!confirm(`${indices.length}件を実行します。よろしいですか？\nこの操作は TickTick / WORKSHEET に変更を加えます。`)) return;
+
+      const btn = $('#m-execute');
+      btn.disabled = true;
+      btn.textContent = '実行中...';
+
+      try {
+        const r = await fetch('/api/minutes/apply', {
+          method: 'POST', headers: {'content-type': 'application/json'},
+          body: JSON.stringify({id: mid, selected_indices: indices}),
+        });
+        const j = await r.json();
+        if (!j.ok) throw new Error(j.error);
+
+        // 結果表示
+        const results = j.results || [];
+        const successList = results.filter(r => r.ok).map(r => `<li style="color:var(--color-green);">[OK] ${escapeHtml(r.result || '')}</li>`).join('');
+        const failList = results.filter(r => !r.ok).map(r => `<li style="color:var(--danger);">[NG] ${escapeHtml(r.error || '')}</li>`).join('');
+
+        $('#minute-modal-body').innerHTML = `
+          <div style="margin-bottom:14px; padding:12px; background:${j.failed_count?'#fdf0e6':'#e8f5e8'}; border-radius:4px; font-size:13px;">
+            <strong>反映完了</strong> — 成功 ${j.succeeded_count}件 / 失敗 ${j.failed_count}件
+          </div>
+          ${successList ? `<h4 style="font-size:12px; color:var(--ink-3); margin-bottom:6px;">成功</h4><ul style="font-size:13px; line-height:1.7; padding-left:20px; margin-bottom:14px;">${successList}</ul>` : ''}
+          ${failList ? `<h4 style="font-size:12px; color:var(--ink-3); margin-bottom:6px;">失敗</h4><ul style="font-size:13px; line-height:1.7; padding-left:20px;">${failList}</ul>` : ''}
+        `;
+        $('#minute-modal-foot').innerHTML = `
+          <button class="modal-btn" id="m-close-result">閉じる</button>
+          <button class="modal-btn primary" id="m-detail-after">議事録詳細へ</button>
+        `;
+        $('#m-close-result').addEventListener('click', () => {
+          closeMinuteModal();
+          // データ再読込
+          fetch('data.js?_=' + Date.now()).then(r => r.text()).then(t => { eval(t); renderMinutes(); renderJobs(); });
+        });
+        $('#m-detail-after').addEventListener('click', async () => {
+          const newScript = await fetch('data.js?_=' + Date.now()).then(r => r.text());
+          eval(newScript);
+          renderJobs();
+          openMinuteDetail(mid);
+        });
+        showToast(`反映完了 (${j.succeeded_count}/${indices.length})`);
+      } catch (e) {
+        alert('反映失敗: ' + e.message);
+        btn.disabled = false;
+        btn.textContent = '選択項目を実行';
+      }
+    });
+  }
+
+  // ====== INIT ======
+  renderHeader();
+  renderStats();
+  renderPills();
+  renderJobs();
+  checkServer();
+  resumePollingForInProgress();
+
+  // TickTick同期ボタン
+  document.getElementById('btn-sync-tt').addEventListener('click', () => syncTickTick(true));
+})();
+</script>
+</body>
+</html>

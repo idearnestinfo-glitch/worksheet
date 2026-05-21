@@ -1,0 +1,66 @@
+{
+  "_comment": "WORKSHEETシステム 設定ファイル。【】内をすべて自社情報に書き換えてください",
+  "company": {
+    "name": "【会社名（例：株式会社〇〇）】",
+    "name_kana": "【会社名カナ】",
+    "name_short": "【略称（例：○○Inc.）】",
+    "representative": "【担当者名】",
+    "representative_title": "【役職（例：代表取締役）】",
+    "postal_code": "【郵便番号（例：432-8005）】",
+    "address": "【住所】",
+    "tel": "【電話番号】",
+    "fax": "",
+    "email": "【メールアドレス】",
+    "url": "【ウェブサイトURL】",
+    "corporate_number": "【法人番号（13桁）】",
+    "invoice_registration_number": "【インボイス登録番号（例：T0000000000000）】"
+  },
+  "bank": {
+    "name": "【銀行名（例：〇〇銀行）】",
+    "branch": "【支店名（例：〇〇支店）】",
+    "account_type": "普通",
+    "account_number": "【口座番号】",
+    "account_holder": "【口座名義（カナ）】",
+    "fee_note": "振込手数料は御社にてご負担願います。"
+  },
+  "tax": {
+    "default_rate": 10,
+    "rates_available": [10],
+    "_note": "現状は通常税率10%のみ。軽減税率8%が必要になったら rates_available に追加"
+  },
+  "staff": [
+    {
+      "id": "staff1",
+      "name": "【担当者1の名前】",
+      "name_full": "【担当者1のフルネーム】",
+      "role": "【役職】"
+    }
+  ],
+  "next_job_number": 10001,
+  "_job_number_note": "次に採番する制作番号。新規案件作成時にこの値を使い、+1する",
+  "ticktick": {
+    "project_name": "【TickTickのプロジェクト名（例：💼仕事）】",
+    "project_id": "【TickTickのプロジェクトID — セットアップ手順を参照】",
+    "naming_convention": "【{制作番号}】{案件名}",
+    "naming_convention_shooting": "【撮影】{案件名}",
+    "sync_fields": [
+      "制作番号",
+      "案件名",
+      "状態",
+      "外注フラグ",
+      "担当"
+    ]
+  },
+  "document_defaults": {
+    "見積書": {
+      "title": "御見積明細書"
+    },
+    "請求書": {
+      "title": "御請求書",
+      "greeting": "平素は格別のお引き立てを賜り厚く御礼申し上げます。下記の通りご請求申し上げます。"
+    },
+    "納品書": {
+      "title": "納品書"
+    }
+  }
+}

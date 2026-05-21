@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>御見積明細書</title>
+<style>
+  :root {
+    --ink:   #1a1a1a;
+    --ink-2: #4a4a4a;
+    --ink-3: #909090;
+    --line:  #d0cdc6;
+    --line-dark: #1a1a1a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #e8e6e0;
+    font-family: -apple-system, "Hiragino Sans", "Yu Gothic Medium", sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* ===== PRINT BUTTON (screen only) ===== */
+  .screen-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--ink);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    font-size: 12px;
+    gap: 12px;
+  }
+  .screen-bar a { color: #aaa; text-decoration: none; font-size: 12px; }
+  .screen-bar a:hover { color: white; }
+  .screen-bar .actions { display: flex; gap: 8px; }
+  .screen-bar button {
+    padding: 5px 14px;
+    border: 1px solid #555;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 3px;
+  }
+  .screen-bar button.primary {
+    background: white;
+    color: var(--ink);
+    border-color: white;
+    font-weight: 600;
+  }
+  .screen-bar button:hover:not(.primary) { border-color: white; }
+
+  /* ===== PAGE WRAPPER ===== */
+  .page-wrap {
+    padding: 48px 20px 60px;
+  }
+
+  /* ===== DOCUMENT ===== */
+  .doc {
+    background: white;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 18mm 16mm 16mm;
+    position: relative;
+  }
+
+  /* ===== TITLE ===== */
+  .doc-title {
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .doc-meta {
+    display: flex;
+    gap: 32px;
+    font-size: 12px;
+    color: var(--ink-2);
+    margin-bottom: 28px;
+  }
+  .doc-meta span { display: flex; gap: 6px; }
+
+  /* ===== ADDRESS BLOCK ===== */
+  .addr-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .addr-col { font-size: 12px; line-height: 1.8; }
+  .addr-col .name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .addr-col.right { text-align: right; position: relative; line-height: 1.2; }
+  .kakuin {
+    position: absolute;
+    top: -56px;
+    right: 0;
+    width: 96px;
+    height: 96px;
+    opacity: 0.82;
+    pointer-events: none;
+  }
+  .addr-col .company-title {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    border: none;
+    border-top: 1.5px solid var(--line-dark);
+    margin-bottom: 0;
+  }
+  .divider-light {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 0;
+  }
+
+  /* ===== ITEMS TABLE ===== */
+  /*
+   * 行間ルール:
+   *   --item-py   : 各行の上下パディング（= 行の高さの基準）
+   *   .spacer-row : グループ区切り線。上下に --item-py ぶんの余白を持ち
+   *                 視覚的に「1行分の空き」を作る
+   *   行どうしの間隔はすべて --item-py で統一（border なし）
+   */
+  :root {
+    --item-py: 10px;
+  }
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 0;
+  }
+  .items-table thead tr {
+    border-bottom: 1px solid var(--line);
+  }
+  .items-table thead th {
+    padding: 8px 8px 8px 0;
+    font-weight: 500;
+    color: var(--ink-3);
+    font-size: 11px;
+    text-align: left;
+  }
+  .items-table thead th.num { text-align: right; }
+
+  /* 各明細行: 均等パディング、行間ボーダーなし */
+  .items-table tbody tr.item-row td {
+    padding: var(--item-py) 8px var(--item-py) 0;
+    vertical-align: middle;
+  }
+  /* ヘッダー直下の1行目だけ上を少し広げる */
+  .items-table tbody tr.item-row:first-child td {
+    padding-top: calc(var(--item-py) * 1.8);
+  }
+
+  /* グループ区切り: 高さ = 1行分、線をグラデーションで正確に中央配置 */
+  .items-table tbody tr.spacer-row td {
+    height: calc(var(--item-py) * 2);
+    padding: 0;
+    border: none;
+    background: linear-gradient(
+      to bottom,
+      transparent calc(50% - 0.5px),
+      var(--line) calc(50% - 0.5px),
+      var(--line) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    );
+  }
+  .item-desc { font-size: 12px; color: var(--ink); }
+  .item-sub  { font-size: 10px; color: var(--ink-3); margin-top: 1px; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .col-desc { width: auto; }
+  .col-qty  { width: 52px; }
+  .col-unit { width: 76px; }
+  .col-amt  { width: 88px; }
+
+  /* ===== TOTALS ===== */
+  .totals-section {
+    border-top: 1.5px solid var(--line-dark);
+    margin-top: 8px;
+    padding-top: 10px;
+  }
+  .totals-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .totals-table td {
+    padding: 3px 0;
+  }
+  .totals-table td.lbl { color: var(--ink-2); }
+  .totals-table td.val { text-align: right; font-variant-numeric: tabular-nums; }
+  .totals-table tr.grand td {
+    padding-top: 12px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .totals-table tr.grand td.lbl { font-size: 12px; font-weight: 500; padding-top: 18px; color: var(--ink-2); }
+
+  /* ===== VALIDITY ===== */
+  .validity-note {
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  /* ===== SANKO (参考価格) ===== */
+  .sanko-section {
+    margin-top: 24px;
+  }
+  .sanko-box {
+    border: 0.75px solid var(--ink-3);
+    padding: 10px 12px 8px;
+  }
+  .sanko-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+  .sanko-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+  .sanko-table thead th {
+    font-weight: 500;
+    color: var(--ink-3);
+    text-align: left;
+    padding: 0 0 4px;
+    border-bottom: 0.75px solid var(--ink-3);
+  }
+  .sanko-table thead th.num { text-align: right; }
+  .sanko-table td { padding: 4px 0 0; vertical-align: middle; }
+  .sanko-table td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sanko-table .col-desc { width: auto; }
+  .sanko-table .col-qty  { width: 52px; }
+  .sanko-table .col-unit { width: 76px; }
+  .sanko-table .col-amt  { width: 88px; }
+
+  /* ===== BOTTOM SECTION ===== */
+  .bottom-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 11px;
+    line-height: 1.8;
+  }
+  .bottom-block .section-title {
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .bottom-block .thank-you {
+    font-size: 10px;
+    color: var(--ink-2);
+    line-height: 1.7;
+    outline: none;
+    min-height: 2em;
+  }
+  @media screen {
+    .bottom-block .thank-you[contenteditable]:hover {
+      background: #f8f7f4;
+      border-radius: 3px;
+    }
+    .bottom-block .thank-you[contenteditable]:focus {
+      background: #f8f7f4;
+      border-radius: 3px;
+      box-shadow: 0 0 0 1.5px var(--line);
+    }
+  }
+
+  /* ===== FOOTER ===== */
+  .doc-footer-wrap {
+    position: absolute;
+    bottom: 12mm;
+    left: 16mm;
+    right: 16mm;
+  }
+  .doc-footer-logo {
+    text-align: right;
+    padding-bottom: 6px;
+  }
+  .doc-footer-logo img {
+    height: 15px;
+    width: auto;
+  }
+  .doc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--ink-3);
+    border-top: 1px solid var(--line);
+    padding-top: 6px;
+  }
+
+  /* ===== EMPTY / ERROR ===== */
+  .empty-state {
+    padding: 60px;
+    text-align: center;
+    color: var(--ink-3);
+  }
+  .empty-state a { color: #006985; }
+
+  /* ===== PRINT ===== */
+  @page { size: A4; margin: 15mm; }
+  @media print {
+    html, body { background: white; }
+    .screen-bar { display: none; }
+    .page-wrap { padding: 0; }
+    .doc { width: 100%; min-height: 0; margin: 0; padding: 0; box-shadow: none; }
+    /* フッターはページ固定 */
+    .doc-footer-wrap { position: fixed; bottom: 0; left: 0; right: 0; }
+    /* グラデーション線 → border に切り替え（背景画像不要） */
+    .items-table tbody tr.spacer-row td {
+      background: none;
+      border-top: 1px solid var(--line);
+      height: var(--item-py);
+      padding: var(--item-py) 0 0;
+    }
+    .items-table tbody tr.job-spacer-row td {
+      background: none;
+      border-top: 1.5px solid var(--ink-3);
+      height: var(--item-py);
+      padding: calc(var(--item-py) * 1.25) 0 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="screen-bar" id="screen-bar">
+  <a id="back-link" href="index.html">← 一覧へ戻る</a>
+  <div style="font-size:11px; color:#aaa;">印刷設定：用紙 A4 ／ ヘッダーとフッター オフ ／ 背景画像 オン</div>
+  <div class="actions">
+    <span id="ver-display" style="font-size:11px; color:#888; margin-right:6px;"></span>
+    <button id="btn-reset-ver" style="display:none; font-size:11px; margin-right:6px;" onclick="resetEstimateVersion()">通し番号リセット</button>
+    <button class="primary" id="btn-print">印刷 / PDF保存</button>
+  </div>
+</div>
+
+<div class="page-wrap">
+  <div id="root"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  const D = window.IDEARNEST;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtYen     = n => n == null ? '' : '¥' + Number(n).toLocaleString('ja-JP');
+  const fmtYenUnit = n => { if (n == null) return ''; const v = Math.round(Number(n) * 10) / 10; return '¥' + v.toLocaleString('ja-JP', { minimumFractionDigits: v % 1 !== 0 ? 1 : 0, maximumFractionDigits: 1 }); };
+  const fmtDate = s => s ? s.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$1年$2月$3日').replace(/年0/,'年').replace(/月0/,'月') : '';
+  const addMonths = (s, m) => {
+    if (!s) return '';
+    const dt = new Date(s); dt.setMonth(dt.getMonth() + m);
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+  };
+
+  if (!D) {
+    $('root').innerHTML = '<div class="empty-state">data.js が見つかりません。<br>ターミナルで <code>cd ~/IDEARNEST && python3 scripts/build_data_js.py</code> を実行してください。</div>';
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const idParam = params.get('id');
+  const job = (D.jobs || []).find(j => String(j.制作番号) === String(idParam) || j.TickTick_task_id === idParam);
+
+  if (!job) {
+    $('root').innerHTML = `<div class="empty-state">案件 #${esc(idParam || '?')} が見つかりません。<br><a href="index.html">← 一覧へ戻る</a></div>`;
+    return;
+  }
+
+  // ===== クライアント情報を取得 =====
+  const client = (D.clients || []).find(c => c.id === job.クライアント || c.社名 === job.クライアント) || {};
+  const co   = D.settings?.company || {};
+  const bank = D.settings?.bank || {};
+  const docTitle  = D.settings?.document_defaults?.見積書?.title || '御見積明細書';
+  const isWebJob  = job.媒体 === 'web';
+  const defaultCaution = isWebJob
+    ? '詳しいページ構成は別紙のサイトマップをご参照ください。'
+    : 'デザインの著作権は制作者に帰属するため、編集可能な元データ（AI/PSD等）のお渡しは原則として行っておりません。ご納品は印刷・Web表示用のPDFまたはJPG/PNG形式となります。何卒ご了承ください。<br>ただしロゴ・サイン・CI等の制作に関しましては、規約付きでAIのお渡しを行っております。';
+
+  // ===== 明細アイテム収集（社内 + 外注、選択済みのみ） =====
+  const rows = [];
+
+  // 社内明細
+  for (const m of (job.明細 || [])) {
+    const selected = (m.選択肢 || []).filter(o => o.選択);
+    if (selected.length === 0) continue;
+    if (rows.length > 0) rows.push({ _type: 'spacer' });
+    for (const o of selected) {
+      rows.push({
+        _type: 'item',
+        desc: o.内容 || '',
+        qty:  o.数量,
+        unit: o.単価,
+        amt:  o.金額,
+        rate: m.税率 ?? 10,
+      });
+    }
+  }
+
+  // 外注
+  const gaichuItems = [];
+  for (const g of (job.外注 || [])) {
+    for (const o of (g.選択肢 || [])) {
+      if (o.選択 && o.請求額) gaichuItems.push(o);
+    }
+  }
+  if (gaichuItems.length > 0) {
+    if (rows.length > 0) rows.push({ _type: 'spacer' });
+    for (const o of gaichuItems) {
+      rows.push({
+        _type: 'item',
+        desc: o.内容 || '',
+        qty:  o.数量,
+        unit: o.単価,
+        amt:  o.請求額,
+        rate: 10,
+      });
+    }
+  }
+
+  // ===== 参考価格収集（未選択の選択肢） =====
+  const sankoPrices = [];
+  for (const m of (job.明細 || [])) {
+    for (const o of (m.選択肢 || [])) {
+      if (!o.選択 && (o.内容 || o.金額)) {
+        sankoPrices.push({ desc: o.内容 || '', qty: o.数量, unit: o.単価, amt: o.金額 || 0, rate: m.税率 ?? 10 });
+      }
+    }
+  }
+  for (const g of (job.外注 || [])) {
+    for (const o of (g.選択肢 || [])) {
+      if (!o.選択 && (o.内容 || o.請求額)) {
+        sankoPrices.push({ desc: o.内容 || '', qty: o.数量, unit: o.単価, amt: o.請求額 || 0, rate: 10 });
+      }
+    }
+  }
+
+  // ===== 合計計算 =====
+  const items = rows.filter(r => r._type === 'item');
+  const subtotal = items.reduce((s, r) => s + (r.amt || 0), 0);
+  const taxMap = {};
+  for (const r of items) {
+    const rate = r.rate ?? 10;
+    taxMap[rate] = (taxMap[rate] || 0) + Math.round((r.amt || 0) * rate / 100);
+  }
+  const totalTax = Object.values(taxMap).reduce((s, v) => s + v, 0);
+  const grandTotal = subtotal + totalTax;
+
+  // ===== 担当者 =====
+  const tanto = (client.担当者 || []).find(t => t.名前) || {};
+  const tantoPart = client.請求書送り先名前
+    ? `<div>${esc(client.請求書送り先名前)} 様</div>`
+    : tanto.名前 ? `<div>${esc(tanto.名前)} 様</div>` : '';
+
+  // ===== 日付 =====
+  const _t = new Date();
+  const todayStr = `${_t.getFullYear()}-${String(_t.getMonth()+1).padStart(2,'0')}-${String(_t.getDate()).padStart(2,'0')}`;
+  const validDate = addMonths(todayStr, 2);
+  const docNo     = job.制作番号 != null ? String(job.制作番号) : (job.TickTick_task_id || '');
+
+  // ===== アイテム行 HTML =====
+  const itemsHtml = rows.map(r => {
+    if (r._type === 'spacer') {
+      return `<tr class="spacer-row"><td colspan="4"></td></tr>`;
+    }
+    const qtyDisp  = r.qty  != null ? String(r.qty).replace(/[^\d.枚部冊式点]/g,'') || r.qty : '';
+    const unitDisp = r.unit != null ? fmtYenUnit(r.unit) : '';
+    const amtDisp  = r.amt  != null ? fmtYen(r.amt)  : '';
+    return `<tr class="item-row">
+      <td class="col-desc"><div class="item-desc">${esc(r.desc)}</div></td>
+      <td class="col-qty num">${esc(qtyDisp)}</td>
+      <td class="col-unit num">${unitDisp}</td>
+      <td class="col-amt num">${amtDisp}</td>
+    </tr>`;
+  }).join('');
+
+  // ===== 税額行 HTML =====
+  const taxRows = Object.entries(taxMap).map(([rate, tax]) =>
+    `<tr><td class="lbl">消費税（${rate}%）</td><td></td><td class="val">${fmtYen(tax)}</td></tr>`
+  ).join('');
+
+  // ===== 銀行情報 =====
+  const bankHtml = bank.name ? `
+    <div>${esc(bank.name)} ${esc(bank.branch)}</div>
+    <div>${esc(bank.account_type)} ${esc(bank.account_number)}</div>
+    <div>${esc(bank.account_holder)}</div>
+    ${bank.fee_note ? `<div style="margin-top:4px;color:var(--ink-3)">${esc(bank.fee_note)}</div>` : ''}
+  ` : '';
+
+  // ===== 登録番号 =====
+  const invoiceNo = co.invoice_registration_number ? `登録番号: ${co.invoice_registration_number}` : '';
+
+  // ===== レンダリング =====
+  const html = `
+  <div class="doc">
+
+    <div class="doc-title">${esc(docTitle)}</div>
+    <div class="doc-meta">
+      <span><span style="color:var(--ink-3)">No.</span> ${esc(docNo)}</span>
+      <span><span style="color:var(--ink-3)">発行日</span> <span id="issue-date" contenteditable="true" style="outline:none; border-bottom:1px solid transparent;" onfocus="this.style.borderBottomColor='var(--line)'" onblur="this.style.borderBottomColor='transparent'">${fmtDate(todayStr)}</span></span>
+    </div>
+
+    <div class="addr-block">
+      <div class="addr-col left">
+        <div class="name">${esc(client.社名_請求書用 || client.社名 || job.クライアント || '')} ${esc(client.敬称 || job.敬称 || '御中')}</div>
+        ${client.郵便番号 ? `<div>〒${esc(client.郵便番号)}</div>` : ''}
+        ${client.住所_請求書用 ? `<div>${esc(client.住所_請求書用)}</div>` : ''}
+        ${tantoPart}
+      </div>
+      <div class="addr-col right">
+        <img class="kakuin" src="assets/stamp.svg" alt="角印">
+        <div class="company-title">WORKSHEET</div>
+        <div class="name">${esc(co.name || '会社名')}</div>
+        ${co.postal_code ? `<div>〒${esc(co.postal_code)}</div>` : ''}
+        ${co.address     ? `<div>${esc(co.address)}</div>`      : ''}
+        ${co.tel         ? `<div>Tel: ${esc(co.tel)}</div>`     : ''}
+        ${co.email       ? `<div>${esc(co.email)}</div>`        : ''}
+        ${co.url         ? `<div>${esc(co.url)}</div>`          : ''}
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th class="col-desc">品目</th>
+          <th class="col-qty num">数量</th>
+          <th class="col-unit num">単価</th>
+          <th class="col-amt num">金額</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${itemsHtml || '<tr class="item-row"><td colspan="4" style="color:var(--ink-3);padding:20px 0;">明細未入力</td></tr>'}
+      </tbody>
+    </table>
+
+    <div class="totals-section">
+      <table class="totals-table">
+        <colgroup><col><col style="width:120px"><col style="width:110px"></colgroup>
+        <tr>
+          <td class="lbl">小計</td>
+          <td></td>
+          <td class="val">${fmtYen(subtotal)}</td>
+        </tr>
+        ${taxRows}
+        <tr><td colspan="3" style="padding:0"><hr class="divider-light" style="margin:6px 0"></td></tr>
+        <tr class="grand">
+          <td class="lbl">合計金額</td>
+          <td></td>
+          <td class="val">${fmtYen(grandTotal)}</td>
+        </tr>
+      </table>
+      ${validDate ? `<div class="validity-note">有効期限: ${fmtDate(validDate)}</div>` : ''}
+    </div>
+
+    ${sankoPrices.length > 0 ? `
+    <div class="sanko-section">
+      <div class="sanko-box">
+        <div class="sanko-title">参考価格</div>
+        <table class="sanko-table">
+          <colgroup>
+            <col class="col-desc">
+            <col class="col-qty">
+            <col class="col-unit">
+            <col class="col-amt">
+          </colgroup>
+          <thead><tr>
+            <th>品目</th>
+            <th class="num">数量</th>
+            <th class="num">単価</th>
+            <th class="num">金額</th>
+          </tr></thead>
+          <tbody>
+            ${sankoPrices.map(p => {
+              const qtyDisp  = p.qty  != null ? String(p.qty).replace(/[^\d.枚部冊式点]/g,'') || p.qty : '';
+              const unitDisp = p.unit != null ? fmtYenUnit(p.unit) : '';
+              const amtDisp  = p.amt  != null ? fmtYen(p.amt)  : '';
+              return `<tr>
+                <td>${esc(p.desc)}</td>
+                <td class="num">${esc(String(qtyDisp))}</td>
+                <td class="num">${unitDisp}</td>
+                <td class="num">${amtDisp}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+
+    <div class="bottom-block" style="${sankoPrices.length > 0 ? 'border-top:none;' : ''}">
+      <div>
+        <div class="section-title">備考</div>
+        <div class="thank-you" contenteditable="true">${job.備考 ? esc(job.備考) + '<br><br>' : ''}${job.外注備考 ? esc(job.外注備考) + '<br><br>' : ''}平素は格別のお引き立てを賜り厚く御礼申し上げます。ご不明な点はお気軽にお問い合わせください。</div>
+      </div>
+      <div>
+        <div class="section-title">注意事項</div>
+        <div class="thank-you" contenteditable="true">${defaultCaution}</div>
+      </div>
+    </div>
+
+    <div class="doc-footer-wrap">
+      <div class="doc-footer-logo">
+        <img src="assets/logo.svg" alt="IDEARNEST">
+      </div>
+      <div class="doc-footer">
+        <span>${invoiceNo}</span>
+        <span>${esc(co.name || '')}</span>
+      </div>
+    </div>
+
+  </div>`;
+
+  $('root').innerHTML = html;
+  document.title = `御見積明細書 #${docNo} — ${job.クライアント || ''}`;
+
+  // back link
+  $('back-link').href = 'index.html';
+
+  // ===== 発行日・備考・注意事項の自動保存 =====
+  const storageKey = `estimate_notes_${idParam}`;
+  const issueDateEl = $('issue-date');
+  const editables = document.querySelectorAll('.thank-you[contenteditable]');
+
+  // 保存済み内容を復元
+  const saved = localStorage.getItem(storageKey);
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      if (data.issueDate) issueDateEl.textContent = data.issueDate;
+      editables.forEach((el, i) => {
+        if (data.notes && data.notes[i] !== undefined) el.innerHTML = data.notes[i];
+      });
+    } catch(e) {}
+  }
+
+  // 編集のたびに自動保存
+  const saveAll = () => {
+    localStorage.setItem(storageKey, JSON.stringify({
+      issueDate: issueDateEl.textContent,
+      notes: Array.from(editables).map(el => el.innerHTML),
+    }));
+  };
+  issueDateEl.addEventListener('input', saveAll);
+  editables.forEach(el => el.addEventListener('input', saveAll));
+
+  // ===== 印刷ファイル名・通し番号管理 =====
+  const versionKey = `estimate_version_${idParam}`;
+  let estimateVer = parseInt(localStorage.getItem(versionKey) || '0');
+
+  const buildPdfTitle = (ver) => {
+    const today = new Date();
+    const yyyy  = today.getFullYear();
+    const mm    = String(today.getMonth() + 1).padStart(2, '0');
+    const dd    = String(today.getDate()).padStart(2, '0');
+    const dateStr     = `${yyyy}${mm}${dd}`;
+    const clientName  = (job.クライアント || '').trim();
+    const nn          = String(ver).padStart(2, '0');
+    return `見積#${docNo}_${clientName}_${dateStr}_${nn}`;
+  };
+
+  const updateVerDisplay = () => {
+    const verEl   = document.getElementById('ver-display');
+    const resetEl = document.getElementById('btn-reset-ver');
+    if (verEl)   verEl.textContent = estimateVer > 0 ? `ver.${String(estimateVer).padStart(2,'0')}` : '';
+    if (resetEl) resetEl.style.display = estimateVer > 0 ? '' : 'none';
+  };
+  updateVerDisplay();
+
+  // 印刷ボタン
+  document.getElementById('btn-print').addEventListener('click', () => {
+    estimateVer++;
+    localStorage.setItem(versionKey, String(estimateVer));
+    document.title = buildPdfTitle(estimateVer);
+    updateVerDisplay();
+    window.print();
+  });
+
+  // 通し番号リセット（グローバルに公開）
+  window.resetEstimateVersion = () => {
+    estimateVer = 0;
+    localStorage.removeItem(versionKey);
+    document.title = `御見積明細書 #${docNo} — ${job.クライアント || ''}`;
+    updateVerDisplay();
+  };
+
+})();
+</script>
+</body>
+</html>

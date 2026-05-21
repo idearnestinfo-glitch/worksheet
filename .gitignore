@@ -1,0 +1,32 @@
+# 出力PDFはサイズが大きく履歴に残す価値が低いので除外
+pdf/
+
+# 素材は画像・PDFなので必要に応じてignore（運用次第）
+# 素材/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Node (将来追加するかも)
+node_modules/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Temporary
+*.tmp
+*.bak
+
+# Auto-generated build artifact
+ui/data.js
+
+# Logs
+logs/
