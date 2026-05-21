@@ -25,7 +25,9 @@
   },
   "tax": {
     "default_rate": 10,
-    "rates_available": [10],
+    "rates_available": [
+      10
+    ],
     "_note": "現状は通常税率10%のみ。軽減税率8%が必要になったら rates_available に追加"
   },
   "staff": [
@@ -36,8 +38,8 @@
       "role": "【役職】"
     }
   ],
-  "next_job_number": 10001,
-  "_job_number_note": "次に採番する制作番号。新規案件作成時にこの値を使い、+1する",
+  "next_job_number": 20001,
+  "_job_number_note": "次に採番する制作番号。新規案件作成時にこの値を使い、+1する。【重要】10001〜19999 は別システムと統合時のために予約済み。このシステムは 20001 から採番する",
   "ticktick": {
     "project_name": "【TickTickのプロジェクト名（例：💼仕事）】",
     "project_id": "【TickTickのプロジェクトID — セットアップ手順を参照】",
